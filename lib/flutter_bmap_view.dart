@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -29,17 +31,20 @@ class LatLng {
   final double latitude;
   final double longitude;
 
+  static fromJson(Map<dynamic, dynamic> json) {
+    return LatLng(json['latitude'], json['longitude']);
+  }
+
   Map<String, double> asJson() {
     return <String, double>{'latitude': latitude, 'longitude': longitude};
   }
 }
 
 class BMapStatus {
-  const BMapStatus(
-      {this.overlook = 0.0,
-      this.rotate = 0.0,
-      this.target = const LatLng(39.914935, 116.403119),
-      this.zoom = 12.0});
+  const BMapStatus({this.overlook = 0.0,
+    this.rotate = 0.0,
+    this.target = const LatLng(39.914935, 116.403119),
+    this.zoom = 12.0});
 
   final double overlook;
   final double rotate;
@@ -57,17 +62,16 @@ class BMapStatus {
 }
 
 class BMapViewOptions {
-  const BMapViewOptions(
-      {this.compassEnabled = true,
-      this.logoPosition = LogoPosition.logoPostionleftBottom,
-      this.mapStatus = const BMapStatus(),
-      this.mapType = BMapType.normal,
-      this.overlookingGesturesEnabled = true,
-      this.rotateGesturesEnabled = true,
-      this.scaleControlEnabled = true,
-      this.scrollGesturesEnabled = true,
-      this.zoomControlsEnabled = true,
-      this.zoomGesturesEnabled = true});
+  const BMapViewOptions({this.compassEnabled = true,
+    this.logoPosition = LogoPosition.logoPostionleftBottom,
+    this.mapStatus = const BMapStatus(),
+    this.mapType = BMapType.normal,
+    this.overlookingGesturesEnabled = true,
+    this.rotateGesturesEnabled = true,
+    this.scaleControlEnabled = true,
+    this.scrollGesturesEnabled = true,
+    this.zoomControlsEnabled = true,
+    this.zoomGesturesEnabled = true});
 
   final bool compassEnabled;
   final LogoPosition logoPosition;
@@ -96,6 +100,33 @@ class BMapViewOptions {
   }
 }
 
+class InfoWindow {
+  InfoWindow({this.position,
+    this.info,
+    this.tag,
+    this.yOffset = -70,
+    this.textColor = 0xFF000000,
+    this.textSize = 14.0});
+
+  final LatLng position;
+  final String info;
+  final int yOffset;
+  final int textColor;
+  final double textSize;
+  final String tag;
+
+  Map<String, dynamic> asJson() {
+    return <String, dynamic>{
+      'position': position.asJson(),
+      'info': info,
+      'yOffset': yOffset,
+      'textColor': textColor.toString(),
+      'textSize': textSize,
+      'tag': tag
+    };
+  }
+}
+
 class MarkerAnimateType {
   const MarkerAnimateType._(this.name);
 
@@ -108,19 +139,18 @@ class MarkerAnimateType {
 }
 
 class MarkerOptions {
-  const MarkerOptions(
-      {this.position,
-      this.title,
-      this.icon,
-      this.visible = true,
-      this.animateType = MarkerAnimateType.none,
-      this.alpha = 1.0,
-      this.perspective = true,
-      this.draggable = false,
-      this.flat = false,
-      this.rotate = 0.0,
-      this.extraInfo = const <String, dynamic>{},
-      this.zIndex = 0});
+  const MarkerOptions({this.position,
+    this.title,
+    this.icon,
+    this.visible = true,
+    this.animateType = MarkerAnimateType.none,
+    this.alpha = 1.0,
+    this.perspective = true,
+    this.draggable = false,
+    this.flat = false,
+    this.rotate = 0.0,
+    this.extraInfo = const <String, dynamic>{},
+    this.zIndex = 0});
 
   final String icon;
   final MarkerAnimateType animateType;
@@ -132,8 +162,9 @@ class MarkerOptions {
   final double rotate;
   final String title;
   final bool visible;
-  final Map<String, dynamic> extraInfo;
+  final Map<dynamic, dynamic> extraInfo;
   final int zIndex;
+
   Map<String, dynamic> asJson() {
     return <String, dynamic>{
       'icon': icon,
@@ -166,18 +197,17 @@ class TextOptionsAlign {
 }
 
 class TextOptions {
-  const TextOptions(
-      {this.position,
-      this.text,
-      this.alignX = TextOptionsAlign.alignCenterHorizontal,
-      this.alignY = TextOptionsAlign.alignTop,
-      this.bgColor = 0x00000000,
-      this.visible = true,
-      this.fontColor = 0xFFFF00FF,
-      this.fontSize = 24,
-      this.extraInfo = const <String, dynamic>{},
-      this.rotate = 0.0,
-      this.zIndex = 0});
+  const TextOptions({this.position,
+    this.text,
+    this.alignX = TextOptionsAlign.alignCenterHorizontal,
+    this.alignY = TextOptionsAlign.alignTop,
+    this.bgColor = 0x00000000,
+    this.visible = true,
+    this.fontColor = 0xFFFF00FF,
+    this.fontSize = 24,
+    this.extraInfo = const <String, dynamic>{},
+    this.rotate = 0.0,
+    this.zIndex = 0});
 
   final TextOptionsAlign alignX;
   final TextOptionsAlign alignY;
@@ -205,6 +235,70 @@ class TextOptions {
       'extraInfo': extraInfo,
       'zIndex': zIndex
     };
+  }
+}
+
+class TexturePolylineOptions {
+  TexturePolylineOptions(this.points, this.customTextureList, this.textureIndex,
+      {this.width = 20, this.dottedLine = true})
+      : assert(points.length > 1),
+        assert(customTextureList.isNotEmpty),
+        assert(textureIndex.length == points.length - 1);
+
+  final List<LatLng> points;
+  final int width;
+  final bool dottedLine;
+  final List<String> customTextureList;
+  final List<int> textureIndex;
+
+  Map<String, dynamic> asJson() {
+    List<Map<String, double>> latLngList = [];
+    for (var latLng in points) {
+      latLngList.add(latLng.asJson());
+    }
+    return <String, dynamic>{
+      'points': latLngList,
+      'customTextureList': customTextureList,
+      'textureIndex': textureIndex,
+      'width': width,
+      'dottedLine': dottedLine
+    };
+  }
+}
+
+class MapPoi {
+  MapPoi({this.uid, this.name, this.position});
+
+  final String uid;
+  final String name;
+  final LatLng position;
+
+  static fromJson(Map<dynamic, dynamic> json) {
+    return MapPoi(
+        uid: json['uid'], name: json['name'], position: LatLng.fromJson(json['position']));
+  }
+
+  Map<String, dynamic> asJson() {
+    return <String, dynamic>{'uid': uid, 'name': name, 'position': position.asJson()};
+  }
+}
+
+class Marker {
+  Marker({this.title, this.position, this.extraInfo});
+
+  final String title;
+  final LatLng position;
+  final Map<dynamic, dynamic> extraInfo;
+
+  static fromJson(Map<dynamic, dynamic> json) {
+    return Marker(
+        title: json['title'],
+        extraInfo: json['extraInfo'],
+        position: LatLng.fromJson(json['position']));
+  }
+
+  Map<String, dynamic> asJson() {
+    return <String, dynamic>{'title': title, 'extraInfo': extraInfo, 'position': position.asJson()};
   }
 }
 
@@ -246,8 +340,38 @@ class _FlutterBMapViewState extends State<FlutterBMapView> {
 class FlutterBMapViewController {
   MethodChannel _channel;
 
+  final _onMapClick = StreamController<LatLng>.broadcast();
+
+  Stream<LatLng> get onMapClick => _onMapClick.stream;
+  final _onMapPoiClick = StreamController<MapPoi>.broadcast();
+
+  Stream<MapPoi> get onMapPoiClick => _onMapPoiClick.stream;
+  final _onMarkerClick = StreamController<Marker>.broadcast();
+
+  Stream<Marker> get onMarkerClick => _onMarkerClick.stream;
+
+  Future<Null> _handleMessage(MethodCall call) async {
+    switch (call.method) {
+      case 'onMapClick':
+        var latLng = LatLng.fromJson(call.arguments);
+        _onMapClick.add(latLng);
+        break;
+      case 'onMapPoiClick':
+        var mapPoi = MapPoi.fromJson(call.arguments);
+        _onMapPoiClick.add(mapPoi);
+        break;
+      case 'onMarkerClick':
+        var marker = Marker.fromJson(call.arguments);
+        _onMarkerClick.add(marker);
+        break;
+      default:
+        break;
+    }
+  }
+
   onCreate(String chanelPrefix, int id) {
     _channel = MethodChannel("${chanelPrefix}_$id");
+    _channel.setMethodCallHandler(_handleMessage);
   }
 
   Future<void> onMapViewResume() {
@@ -278,5 +402,34 @@ class FlutterBMapViewController {
       params.add(options.asJson());
     }
     return _channel.invokeMethod("addTexts", params);
+  }
+
+  Future<void> addTexturePolyline(TexturePolylineOptions texturePolyline) {
+    return _channel.invokeMethod("addTexturePolyline", texturePolyline.asJson());
+  }
+
+  Future<void> hideInfoWindow() {
+    return _channel.invokeMethod("hideInfoWindow");
+  }
+
+  Future<void> showInfoWindow(InfoWindow infoWindow) {
+    return _channel.invokeMethod("showInfoWindow", infoWindow.asJson());
+  }
+
+  Future<void> animateMapStatusUpdateNewLatLng(LatLng latLng, {double zoom}) {
+    return _channel
+        .invokeMethod("animateMapStatusNewLatLng", {'center': latLng.asJson(), 'zoom': zoom});
+  }
+
+  Future<void> animateMapStatusUpdateNewBounds(List<LatLng> bounds) {
+    List<Map<String, dynamic>> latLngList = [];
+    for (var options in bounds) {
+      latLngList.add(options.asJson());
+    }
+    return _channel.invokeMethod("animateMapStatusNewBounds", {'bounds': latLngList});
+  }
+
+  Future<void> clearMap() {
+    return _channel.invokeMethod("clearMap");
   }
 }

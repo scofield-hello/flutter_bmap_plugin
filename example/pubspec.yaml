@@ -63,3 +63,8 @@ flutter:
   # see https://flutter.dev/custom-fonts/#from-packages
   assets:
     - assets/marker.png
+    - assets/nav_arrow.png
+    - assets/Icon_road_blue_arrow.png
+    - assets/Icon_road_green_arrow.png
+    - assets/Icon_road_red_arrow.png
+    - assets/Icon_road_yellow_arrow.png

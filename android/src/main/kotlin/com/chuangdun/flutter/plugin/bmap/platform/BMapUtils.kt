@@ -2,10 +2,14 @@ package com.chuangdun.flutter.plugin.bmap.platform
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.TextView
 import com.baidu.mapapi.map.*
 import com.baidu.mapapi.model.LatLng
+import com.chuangdun.flutter.plugin.bmap.FlutterBMapPlugin
+import com.chuangdun.flutter.plugin.bmap.R
 import com.chuangdun.flutter.plugin.bmap.platform.view.*
 import java.io.Serializable
+
 
 fun initBMapViewOptions(createParams: Map<String, *>): BaiduMapOptions {
     Log.d("BMapUtils", "initBMapViewOptions:$createParams")
@@ -53,7 +57,7 @@ fun parseMarkerOptionsList(optionList: List<Map<String, Any>>): List<MarkerOptio
     val markerOptionsList = mutableListOf<MarkerOptions>()
     optionList.map {
         val icon = it["icon"] as String
-        val position = it["position"] as Map<String, Double>
+        val position = it["position"] as Map<*, *>
         val visible = it["visible"] as Boolean
         val animateType = it["animateType"] as String
         val alpha = it["alpha"] as Double
@@ -61,15 +65,17 @@ fun parseMarkerOptionsList(optionList: List<Map<String, Any>>): List<MarkerOptio
         val draggable = it["draggable"] as Boolean
         val flat = it["flat"] as Boolean
         val rotate = it["rotate"] as Double
-        val extraInfo = it["extraInfo"] as Map<String, Any>
+        val extraInfo = it["extraInfo"] as Map<*, *>
         val zIndex = it["zIndex"] as Int
-        val latitude = position["latitude"]
-        val longitude = position["longitude"]
-        val latLng = LatLng(latitude!!, longitude!!)
+        //val infoWindowOptions = it["infoWindow"] as HashMap<*, *> ?
+        //val infoWindow = infoWindowOptions?.let { options -> parseInfoWindow(options) }
+        val latitude = position["latitude"] as Double
+        val longitude = position["longitude"] as Double
+        val latLng = LatLng(latitude, longitude)
         val markerOptions = MarkerOptions()
         val bundle = Bundle()
         for ((key, value) in extraInfo.entries){
-            bundle.putSerializable(key, value as Serializable)
+            bundle.putSerializable(key as String, value as Serializable)
         }
         markerOptions.apply {
             icon(BMapViewAssets.getBitmapDescriptor(icon))
@@ -83,13 +89,16 @@ fun parseMarkerOptionsList(optionList: List<Map<String, Any>>): List<MarkerOptio
             rotate(rotate.toFloat())
             extraInfo(bundle)
             zIndex(zIndex)
+//            infoWindow?.let {
+//                markerOptions.infoWindow(infoWindow)
+//            }
         }
         markerOptionsList.add(markerOptions)
     }
     return markerOptionsList
 }
 
-fun parseTextOptionsList(optionList: List<Map<String, Any>>): List<TextOptions>{
+fun parseTextOptionsList(optionList: List<Map<String, Any?>>): List<TextOptions> {
     val textOptionsList = mutableListOf<TextOptions>()
     optionList.map {
         val alignX = it["alignX"] as Int
@@ -126,4 +135,95 @@ fun parseTextOptionsList(optionList: List<Map<String, Any>>): List<TextOptions>{
         textOptionsList.add(textOptions)
     }
     return textOptionsList
+}
+
+fun parseInfoWindow(infoWindowOptions: Map<*, *>): InfoWindow {
+    val position = infoWindowOptions["position"] as HashMap<*, *>
+    val latitude = position["latitude"] as Double
+    val longitude = position["longitude"] as Double
+    val info = infoWindowOptions["info"] as String
+    val yOffset = infoWindowOptions["yOffset"] as Int
+    val textColor = infoWindowOptions["textColor"] as String
+    val textSize = infoWindowOptions["textSize"] as Double
+    val tag = infoWindowOptions["tag"] as String?
+    val latLng = LatLng(latitude, longitude)
+    val mInflater = FlutterBMapPlugin.registrar.activity().layoutInflater
+    val infoWindowView = mInflater.inflate(R.layout.info_window, null, false) as TextView
+    infoWindowView.apply {
+        setTextColor(textColor.toLong().toInt())
+        setTextSize(textSize.toFloat())
+        text = info
+    }
+    val infoWindow = InfoWindow(infoWindowView, latLng, yOffset)
+    tag?.let {
+        infoWindow.tag = it
+    }
+    return infoWindow
+}
+
+fun parseTexturePolyline(texturePolylineOptions: Map<*, *>): PolylineOptions {
+    var points = texturePolylineOptions["points"] as List<*>
+    var customTextureList = texturePolylineOptions["customTextureList"] as List<String>
+    var textureIndex = texturePolylineOptions["textureIndex"] as List<Int>
+    var width = texturePolylineOptions["width"] as Int
+    var dottedLine = texturePolylineOptions["dottedLine"] as Boolean
+    var latLngList = points.map {
+        deserializeLatLng(it as Map<*, *>)
+    }.toList()
+    var textureList = customTextureList.map {
+        BMapViewAssets.getBitmapDescriptor(it)
+    }.toList()
+    var polylineOptions = PolylineOptions()
+
+    polylineOptions.apply {
+        width(width)
+        dottedLine(dottedLine)
+        points(latLngList)
+        customTextureList(textureList)
+        textureIndex(textureIndex)
+    }
+    return polylineOptions
+
+}
+
+
+fun serializeBundle(bundle: Bundle?): Map<String, Any?> {
+    val serializedBundle = mutableMapOf<String, Any?>()
+    bundle?.let { b ->
+        b.keySet().forEach { key ->
+            serializedBundle[key] = b.get(key)
+        }
+    }
+    return serializedBundle
+}
+
+fun deserializeLatLng(serializedLatLng: Map<*, *>): LatLng {
+    return LatLng(serializedLatLng["latitude"] as Double, serializedLatLng["longitude"] as Double)
+}
+
+fun serializeLatLng(latLng: LatLng?): Map<String, Double> {
+    val serializedLatLng = mutableMapOf<String, Double>()
+    latLng?.let {
+        serializedLatLng["latitude"] = it.latitude
+        serializedLatLng["longitude"] = it.longitude
+    }
+    return serializedLatLng
+}
+
+fun serializeMapPoi(poi: MapPoi?): Map<String, Any?> {
+    val serializedMapPoi = mutableMapOf<String, Any?>()
+    poi?.let {
+        serializedMapPoi["uid"] = poi.uid
+        serializedMapPoi["name"] = poi.name
+        serializedMapPoi["position"] = serializeLatLng(poi.position)
+    }
+    return serializedMapPoi
+}
+
+fun serializeMarker(marker: Marker): Map<String, Any?> {
+    val serializedMarker = mutableMapOf<String, Any?>()
+    serializedMarker["position"] = serializeLatLng(marker.position)
+    serializedMarker["title"] = marker.title
+    serializedMarker["extraInfo"] = serializeBundle(marker.extraInfo)
+    return serializedMarker
 }
