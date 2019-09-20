@@ -53,7 +53,7 @@ fun initBMapViewOptions(createParams: Map<String, *>): BaiduMapOptions {
     return baiduMapOptions
 }
 
-fun parseMarkerOptionsList(optionList: List<Map<String, Any>>): List<MarkerOptions>{
+fun parseMarkerOptionsList(optionList: List<Map<*, *>>): List<MarkerOptions> {
     val markerOptionsList = mutableListOf<MarkerOptions>()
     optionList.map {
         val icon = it["icon"] as String
@@ -67,8 +67,6 @@ fun parseMarkerOptionsList(optionList: List<Map<String, Any>>): List<MarkerOptio
         val rotate = it["rotate"] as Double
         val extraInfo = it["extraInfo"] as Map<*, *>
         val zIndex = it["zIndex"] as Int
-        //val infoWindowOptions = it["infoWindow"] as HashMap<*, *> ?
-        //val infoWindow = infoWindowOptions?.let { options -> parseInfoWindow(options) }
         val latitude = position["latitude"] as Double
         val longitude = position["longitude"] as Double
         val latLng = LatLng(latitude, longitude)
@@ -89,37 +87,30 @@ fun parseMarkerOptionsList(optionList: List<Map<String, Any>>): List<MarkerOptio
             rotate(rotate.toFloat())
             extraInfo(bundle)
             zIndex(zIndex)
-//            infoWindow?.let {
-//                markerOptions.infoWindow(infoWindow)
-//            }
         }
         markerOptionsList.add(markerOptions)
     }
     return markerOptionsList
 }
 
-fun parseTextOptionsList(optionList: List<Map<String, Any?>>): List<TextOptions> {
+fun parseTextOptionsList(optionList: List<Map<*, *>>): List<TextOptions> {
     val textOptionsList = mutableListOf<TextOptions>()
     optionList.map {
         val alignX = it["alignX"] as Int
         val alignY = it["alignY"] as Int
-        val position = it["position"] as Map<String, Double>
+        val position = it["position"] as Map<*, *>
         val text = it["text"] as String
         val visible = it["visible"] as Boolean
         val bgColor = it["bgColor"] as String
         val fontColor = it["fontColor"] as String
         val fontSize = it["fontSize"] as Int
         val rotate = it["rotate"] as Double
-        val extraInfo = it["extraInfo"] as Map<String, Any>
+        val extraInfo = it["extraInfo"] as Map<*, *>
         val zIndex = it["zIndex"] as Int
-        val latitude = position["latitude"]
-        val longitude = position["longitude"]
-        val latLng = LatLng(latitude!!, longitude!!)
+        val latitude = position["latitude"] as Double
+        val longitude = position["longitude"] as Double
+        val latLng = LatLng(latitude, longitude)
         val textOptions = TextOptions()
-        val bundle = Bundle()
-        for ((key, value) in extraInfo.entries){
-            bundle.putSerializable(key, value as Serializable)
-        }
         textOptions.apply {
             position(latLng)
             visible(visible)
@@ -129,7 +120,7 @@ fun parseTextOptionsList(optionList: List<Map<String, Any?>>): List<TextOptions>
             fontColor(fontColor.toLong().toInt())
             fontSize(fontSize)
             rotate(rotate.toFloat())
-            extraInfo(bundle)
+            extraInfo(deserializeBundle(extraInfo))
             zIndex(zIndex)
         }
         textOptionsList.add(textOptions)
@@ -148,30 +139,30 @@ fun parseInfoWindow(infoWindowOptions: Map<*, *>): InfoWindow {
     val tag = infoWindowOptions["tag"] as String?
     val latLng = LatLng(latitude, longitude)
     val mInflater = FlutterBMapPlugin.registrar.activity().layoutInflater
-    val infoWindowView = mInflater.inflate(R.layout.info_window, null, false) as TextView
+    val infoWindowView = mInflater.inflate(R.layout.info_window,
+            null, false) as TextView
     infoWindowView.apply {
         setTextColor(textColor.toLong().toInt())
         setTextSize(textSize.toFloat())
         text = info
     }
     val infoWindow = InfoWindow(infoWindowView, latLng, yOffset)
-    tag?.let {
-        infoWindow.tag = it
-    }
+    infoWindow.tag = tag
     return infoWindow
 }
 
 fun parseTexturePolyline(texturePolylineOptions: Map<*, *>): PolylineOptions {
     var points = texturePolylineOptions["points"] as List<*>
-    var customTextureList = texturePolylineOptions["customTextureList"] as List<String>
+    var customTextureList = texturePolylineOptions["customTextureList"] as List<*>
     var textureIndex = texturePolylineOptions["textureIndex"] as List<Int>
     var width = texturePolylineOptions["width"] as Int
     var dottedLine = texturePolylineOptions["dottedLine"] as Boolean
+    var extraInfo = texturePolylineOptions["extraInfo"] as Map<*, *>
     var latLngList = points.map {
         deserializeLatLng(it as Map<*, *>)
     }.toList()
     var textureList = customTextureList.map {
-        BMapViewAssets.getBitmapDescriptor(it)
+        BMapViewAssets.getBitmapDescriptor(it as String)
     }.toList()
     var polylineOptions = PolylineOptions()
 
@@ -181,11 +172,20 @@ fun parseTexturePolyline(texturePolylineOptions: Map<*, *>): PolylineOptions {
         points(latLngList)
         customTextureList(textureList)
         textureIndex(textureIndex)
+        extraInfo(deserializeBundle(extraInfo))
     }
     return polylineOptions
 
 }
 
+fun deserializeBundle(serializedBundle: Map<*, *>): Bundle {
+    val bundle = Bundle()
+    for ((key, value) in serializedBundle.entries) {
+        bundle.putSerializable(key as String,
+                value as Serializable)
+    }
+    return bundle
+}
 
 fun serializeBundle(bundle: Bundle?): Map<String, Any?> {
     val serializedBundle = mutableMapOf<String, Any?>()

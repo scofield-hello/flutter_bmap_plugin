@@ -28,86 +28,97 @@ class _MyAppState extends State<MyApp> {
     _controller.onMapClick.listen((LatLng latLng) async {
       _controller.hideInfoWindow();
     });
-    _controller.onMapPoiClick.listen((MapPoi poi) async {});
+    _controller.onMapLongClick.listen((LatLng latLng) async {
+      print(latLng.asJson());
+    });
+    _controller.onMapDoubleClick.listen((LatLng latLng) async{
+      print(latLng.asJson());
+    });
+    _controller.onMapPoiClick.listen((MapPoi poi) async {
+      print(poi.asJson());
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
         home: Scaffold(
-          appBar: AppBar(
-            title: const Text('FlutterBMapView'),
+      appBar: AppBar(
+        title: const Text('FlutterBMapView'),
+      ),
+      body: Column(
+        children: <Widget>[
+          Container(
+            height: 300,
+            child: FlutterBMapView(controller: _controller),
           ),
-          body: Column(
-            children: <Widget>[
-              Container(
-                height: 300,
-                child: FlutterBMapView(controller: _controller),
-              ),
-              FlatButton(
-                  onPressed: () {
-                    var latLngList = _latLngList();
-                    int index = 0;
-                    List<MarkerOptions> markers = latLngList.map((position) {
-                      var option = MarkerOptions(
-                          position: position,
-                          title: "P$index",
-                          icon: "assets/marker.png",
-                          extraInfo: {'name': "P$index", 'address': "马塍路文三路口东部软件园创新大厦A-302"});
-                      index++;
-                      return option;
-                    }).toList();
-                    _controller.addMarkerOverlays(markers);
-                  },
-                  child: Text("添加标注点")),
-              FlatButton(
-                  onPressed: () {
-                    var latLngList = _latLngList();
-                    int index = 0;
-                    List<TextOptions> texts = latLngList.map((position) {
-                      var option = TextOptions(position: position, text: "P$index", fontSize: 40);
-                      index++;
-                      return option;
-                    }).toList();
-                    _controller.addTextOverlays(texts);
-                  },
-                  child: Text("添加文本信息")),
-              FlatButton(
-                  onPressed: () {
-                    var latLngList = _latLngList();
-                    var customTextureList = [
-                      "assets/Icon_road_blue_arrow.png",
-                      "assets/Icon_road_green_arrow.png",
-                      "assets/Icon_road_red_arrow.png",
-                      "assets/Icon_road_yellow_arrow.png"
-                    ];
-                    var textureIndex = <int>[];
-                    var intRandom = Random();
-                    for (var index = 0; index < latLngList.length - 1; index++) {
-                      textureIndex.add(intRandom.nextInt(customTextureList.length));
-                    }
-                    var texturePolyline =
-                    TexturePolylineOptions(latLngList, customTextureList, textureIndex, width: 10);
-                    _controller.addTexturePolyline(texturePolyline);
-                  },
-                  child: Text("画折线")),
-              FlatButton(
-                  onPressed: () {
-                    _controller.clearMap();
-                  },
-                  child: Text("清除图层"))
-            ],
-          ),
-        ));
+          FlatButton(onPressed: _addMarkers, child: Text("添加标注点")),
+          FlatButton(onPressed: _addTextOptionsList, child: Text("添加文本信息")),
+          FlatButton(onPressed: _addPolylineOptions, child: Text("画折线")),
+          FlatButton(onPressed: () => _controller.clearMap(), child: Text("清除图层"))
+        ],
+      ),
+    ));
+  }
+
+  void _addMarkers() {
+    var latLngList = _latLngList();
+    int index = 0;
+    List<MarkerOptions> markers = latLngList.map((position) {
+      var option = MarkerOptions(
+          position: position,
+          title: "P$index",
+          icon: "assets/marker.png",
+          extraInfo: {'name': "P$index", 'address': "马塍路文三路口东部软件园创新大厦A-302"});
+      index++;
+      return option;
+    }).toList();
+    _controller.addMarkerOverlays(markers);
+  }
+
+  void _addTextOptionsList() {
+    var latLngList = _latLngList();
+    int index = 0;
+    List<TextOptions> texts = latLngList.map((position) {
+      var option = TextOptions(position: position, text: "P$index", fontSize: 40);
+      index++;
+      return option;
+    }).toList();
+    _controller.addTextOverlays(texts);
+  }
+
+  void _addPolylineOptions() {
+    var latLngList = _latLngList();
+    var customTextureList = [
+      "assets/Icon_road_blue_arrow.png",
+      "assets/Icon_road_green_arrow.png",
+      "assets/Icon_road_red_arrow.png",
+      "assets/Icon_road_yellow_arrow.png"
+    ];
+    var intRandom = Random();
+    var textureIndex = <int>[];
+    for (var index = 0; index < latLngList.length - 1; index++) {
+      textureIndex.add(intRandom.nextInt(customTextureList.length));
+    }
+    var extraInfo = const<String, dynamic>{
+      'name': "Polyline",
+      'anything': "..."
+    };
+    var texturePolyline =
+        TexturePolylineOptions(latLngList,
+            customTextureList,
+            textureIndex,
+            extraInfo: extraInfo);
+    _controller.addTexturePolyline(texturePolyline);
   }
 
   List<LatLng> _latLngList() {
-    return [
-      LatLng(30.284949, 120.151828),
-      LatLng(30.285059, 120.152659),
-      LatLng(30.285053, 120.153653),
-      LatLng(30.285153, 120.154753),
-      LatLng(30.285253, 120.155733),
+    return const [
+      LatLng(latitude: 30.284949, longitude: 120.151828),
+      LatLng(latitude: 30.285059, longitude: 120.152659),
+      LatLng(latitude: 30.285053, longitude: 120.153653),
+      LatLng(latitude: 30.285153, longitude: 120.154753),
+      LatLng(latitude: 30.285253, longitude: 120.155733),
     ];
   }
 }

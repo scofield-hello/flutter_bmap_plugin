@@ -3,6 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+const LatLng POSITION_BEI_JING = LatLng(latitude: 39.914935, longitude: 116.403119);
+
+///地图类型.
 class BMapType {
   const BMapType._(this.id);
 
@@ -12,11 +15,11 @@ class BMapType {
   static const none = const BMapType._(3);
 }
 
+///百度地图Logo显示位置.
 class LogoPosition {
   const LogoPosition._(this.name);
 
   final String name;
-
   static const logoPostionleftBottom = const LogoPosition._("logoPostionleftBottom");
   static const logoPostionleftTop = const LogoPosition._("logoPostionleftTop");
   static const logoPostionCenterBottom = const LogoPosition._("logoPostionCenterBottom");
@@ -25,14 +28,16 @@ class LogoPosition {
   static const logoPostionRightTop = const LogoPosition._("logoPostionRightTop");
 }
 
+///经纬度信息.
 class LatLng {
-  const LatLng(this.latitude, this.longitude);
-
+  const LatLng({this.latitude, this.longitude});
+  ///纬度.
   final double latitude;
+  ///经度.
   final double longitude;
 
   static fromJson(Map<dynamic, dynamic> json) {
-    return LatLng(json['latitude'], json['longitude']);
+    return LatLng(latitude: json['latitude'], longitude: json['longitude']);
   }
 
   Map<String, double> asJson() {
@@ -41,10 +46,8 @@ class LatLng {
 }
 
 class BMapStatus {
-  const BMapStatus({this.overlook = 0.0,
-    this.rotate = 0.0,
-    this.target = const LatLng(39.914935, 116.403119),
-    this.zoom = 12.0});
+  const BMapStatus(
+      {this.overlook = 0.0, this.target = POSITION_BEI_JING, this.rotate = 0.0, this.zoom = 12.0});
 
   final double overlook;
   final double rotate;
@@ -62,16 +65,17 @@ class BMapStatus {
 }
 
 class BMapViewOptions {
-  const BMapViewOptions({this.compassEnabled = true,
-    this.logoPosition = LogoPosition.logoPostionleftBottom,
-    this.mapStatus = const BMapStatus(),
-    this.mapType = BMapType.normal,
-    this.overlookingGesturesEnabled = true,
-    this.rotateGesturesEnabled = true,
-    this.scaleControlEnabled = true,
-    this.scrollGesturesEnabled = true,
-    this.zoomControlsEnabled = true,
-    this.zoomGesturesEnabled = true});
+  const BMapViewOptions(
+      {this.compassEnabled = true,
+      this.logoPosition = LogoPosition.logoPostionleftBottom,
+      this.mapStatus = const BMapStatus(),
+      this.mapType = BMapType.normal,
+      this.overlookingGesturesEnabled = true,
+      this.rotateGesturesEnabled = true,
+      this.scaleControlEnabled = true,
+      this.scrollGesturesEnabled = true,
+      this.zoomControlsEnabled = true,
+      this.zoomGesturesEnabled = true});
 
   final bool compassEnabled;
   final LogoPosition logoPosition;
@@ -100,33 +104,36 @@ class BMapViewOptions {
   }
 }
 
+///信息窗对象.
 class InfoWindow {
-  InfoWindow({this.position,
-    this.info,
-    this.tag,
-    this.yOffset = -70,
-    this.textColor = 0xFF000000,
-    this.textSize = 14.0});
+  InfoWindow(
+      {this.position,
+      this.info,
+      this.tag,
+      this.yOffset = -70,
+      this.textColor = 0xFF000000,
+      this.textSize = 14.0});
 
   final LatLng position;
   final String info;
+  final String tag;
   final int yOffset;
   final int textColor;
   final double textSize;
-  final String tag;
 
   Map<String, dynamic> asJson() {
     return <String, dynamic>{
       'position': position.asJson(),
       'info': info,
+      'tag': tag,
       'yOffset': yOffset,
       'textColor': textColor.toString(),
-      'textSize': textSize,
-      'tag': tag
+      'textSize': textSize
     };
   }
 }
 
+///标注点动画类型.
 class MarkerAnimateType {
   const MarkerAnimateType._(this.name);
 
@@ -138,19 +145,21 @@ class MarkerAnimateType {
   static const jump = const MarkerAnimateType._("jump");
 }
 
+///标注点对象.
 class MarkerOptions {
-  const MarkerOptions({this.position,
-    this.title,
-    this.icon,
-    this.visible = true,
-    this.animateType = MarkerAnimateType.none,
-    this.alpha = 1.0,
-    this.perspective = true,
-    this.draggable = false,
-    this.flat = false,
-    this.rotate = 0.0,
-    this.extraInfo = const <String, dynamic>{},
-    this.zIndex = 0});
+  const MarkerOptions(
+      {this.position,
+      this.title,
+      this.icon,
+      this.visible = true,
+      this.animateType = MarkerAnimateType.none,
+      this.alpha = 1.0,
+      this.perspective = true,
+      this.draggable = false,
+      this.flat = false,
+      this.rotate = 0.0,
+      this.extraInfo = const <dynamic, dynamic>{},
+      this.zIndex = 0});
 
   final String icon;
   final MarkerAnimateType animateType;
@@ -183,6 +192,7 @@ class MarkerOptions {
   }
 }
 
+///文本对齐方向.
 class TextOptionsAlign {
   const TextOptionsAlign._(this.id);
 
@@ -196,29 +206,31 @@ class TextOptionsAlign {
   static const alignTop = const TextOptionsAlign._(8);
 }
 
+///文本信息对象.
 class TextOptions {
-  const TextOptions({this.position,
-    this.text,
-    this.alignX = TextOptionsAlign.alignCenterHorizontal,
-    this.alignY = TextOptionsAlign.alignTop,
-    this.bgColor = 0x00000000,
-    this.visible = true,
-    this.fontColor = 0xFFFF00FF,
-    this.fontSize = 24,
-    this.extraInfo = const <String, dynamic>{},
-    this.rotate = 0.0,
-    this.zIndex = 0});
+  const TextOptions(
+      {this.position,
+      this.text,
+      this.alignX = TextOptionsAlign.alignCenterHorizontal,
+      this.alignY = TextOptionsAlign.alignTop,
+      this.bgColor = 0x00000000,
+      this.visible = true,
+      this.fontColor = 0xFFFF00FF,
+      this.fontSize = 24,
+      this.extraInfo = const <dynamic, dynamic>{},
+      this.rotate = 0.0,
+      this.zIndex = 0});
 
+  final LatLng position;
+  final String text;
   final TextOptionsAlign alignX;
   final TextOptionsAlign alignY;
   final int bgColor;
-  final Map<String, dynamic> extraInfo;
+  final bool visible;
   final int fontColor;
   final int fontSize;
-  final bool visible;
-  final String text;
+  final Map<dynamic, dynamic> extraInfo;
   final double rotate;
-  final LatLng position;
   final int zIndex;
 
   Map<String, dynamic> asJson() {
@@ -238,18 +250,32 @@ class TextOptions {
   }
 }
 
+///自定义折线PolylineOptions.
 class TexturePolylineOptions {
   TexturePolylineOptions(this.points, this.customTextureList, this.textureIndex,
-      {this.width = 20, this.dottedLine = true})
+      {this.width = 10,
+        this.dottedLine = true,
+        this.extraInfo=const<dynamic, dynamic>{}})
       : assert(points.length > 1),
         assert(customTextureList.isNotEmpty),
         assert(textureIndex.length == points.length - 1);
 
+  ///绘制折线的经纬度列表.
   final List<LatLng> points;
+
+  ///折线宽度.
   final int width;
+
+  ///是否虚线.
   final bool dottedLine;
+
+  ///自定义折线资源名列表.
   final List<String> customTextureList;
+
+  ///折线绘制资源索引.
   final List<int> textureIndex;
+  ///额外信息.
+  final Map<dynamic, dynamic> extraInfo;
 
   Map<String, dynamic> asJson() {
     List<Map<String, double>> latLngList = [];
@@ -266,6 +292,7 @@ class TexturePolylineOptions {
   }
 }
 
+///MapPoi信息.
 class MapPoi {
   MapPoi({this.uid, this.name, this.position});
 
@@ -283,6 +310,7 @@ class MapPoi {
   }
 }
 
+///标注点被点击时返回的标注信息.
 class Marker {
   Marker({this.title, this.position, this.extraInfo});
 
@@ -302,6 +330,7 @@ class Marker {
   }
 }
 
+///百度地图组件.
 class FlutterBMapView extends StatefulWidget {
   FlutterBMapView({Key key, this.controller, this.bMapViewOptions = const BMapViewOptions()})
       : super(key: key);
@@ -340,12 +369,23 @@ class _FlutterBMapViewState extends State<FlutterBMapView> {
 class FlutterBMapViewController {
   MethodChannel _channel;
 
+  ///地图点击事件.
   final _onMapClick = StreamController<LatLng>.broadcast();
 
   Stream<LatLng> get onMapClick => _onMapClick.stream;
+  ///地图长点击事件.
+  final _onMapLongClick = StreamController<LatLng>.broadcast();
+  Stream<LatLng> get onMapLongClick => _onMapLongClick.stream;
+  ///地图双击事件.
+  final _onMapDoubleClick = StreamController<LatLng>.broadcast();
+  Stream<LatLng> get onMapDoubleClick => _onMapDoubleClick.stream;
+
+  ///地图MapPoi点击事件.
   final _onMapPoiClick = StreamController<MapPoi>.broadcast();
 
   Stream<MapPoi> get onMapPoiClick => _onMapPoiClick.stream;
+
+  ///地图标注点点击事件.
   final _onMarkerClick = StreamController<Marker>.broadcast();
 
   Stream<Marker> get onMarkerClick => _onMarkerClick.stream;
@@ -364,6 +404,14 @@ class FlutterBMapViewController {
         var marker = Marker.fromJson(call.arguments);
         _onMarkerClick.add(marker);
         break;
+      case 'onMapLongClick':
+        var latLng = LatLng.fromJson(call.arguments);
+        _onMapLongClick.add(latLng);
+        break;
+      case 'onMapDoubleClick':
+        var latLng = LatLng.fromJson(call.arguments);
+        _onMapDoubleClick.add(latLng);
+        break;
       default:
         break;
     }
@@ -374,18 +422,20 @@ class FlutterBMapViewController {
     _channel.setMethodCallHandler(_handleMessage);
   }
 
-  Future<void> onMapViewResume() {
+  Future<void> setMapViewResume() {
     return _channel.invokeMethod("onMapViewResume");
   }
 
-  Future<void> onMapViewPause() {
+  Future<void> setMapViewPause() {
     return _channel.invokeMethod("onMapViewPause");
   }
 
-  Future<void> onMapViewDestroy() {
+  Future<void> setMapViewDestroy() {
     return _channel.invokeMethod("onMapViewDestroy");
   }
 
+  ///绘制标注点.
+  ///[markers] 标注点列表.
   Future<void> addMarkerOverlays(List<MarkerOptions> markers) {
     assert(markers.length > 0);
     List<Map<String, dynamic>> params = [];
@@ -395,6 +445,8 @@ class FlutterBMapViewController {
     return _channel.invokeMethod("addMarkers", params);
   }
 
+  ///绘制文本信息.
+  ///[texts] 文本信息列表.
   Future<void> addTextOverlays(List<TextOptions> texts) {
     assert(texts.length > 0);
     List<Map<String, dynamic>> params = [];
@@ -404,23 +456,33 @@ class FlutterBMapViewController {
     return _channel.invokeMethod("addTexts", params);
   }
 
+  ///绘制自定义折线.
+  ///[texturePolyline] 折线信息.
   Future<void> addTexturePolyline(TexturePolylineOptions texturePolyline) {
     return _channel.invokeMethod("addTexturePolyline", texturePolyline.asJson());
   }
 
+  ///隐藏InfoWindow.
   Future<void> hideInfoWindow() {
     return _channel.invokeMethod("hideInfoWindow");
   }
 
+  ///显示InfoWindow.
+  ///[infoWindow] 信息窗对象.
   Future<void> showInfoWindow(InfoWindow infoWindow) {
     return _channel.invokeMethod("showInfoWindow", infoWindow.asJson());
   }
 
+  ///移动地图中心至指定经纬度.
+  ///[latLng] 经纬度对象.
+  ///[zoom] 地图缩放级别.
   Future<void> animateMapStatusUpdateNewLatLng(LatLng latLng, {double zoom}) {
     return _channel
         .invokeMethod("animateMapStatusNewLatLng", {'center': latLng.asJson(), 'zoom': zoom});
   }
 
+  ///移动地图中心至指定经纬度范围.
+  ///[bounds] 经纬度范围.
   Future<void> animateMapStatusUpdateNewBounds(List<LatLng> bounds) {
     List<Map<String, dynamic>> latLngList = [];
     for (var options in bounds) {
@@ -429,6 +491,7 @@ class FlutterBMapViewController {
     return _channel.invokeMethod("animateMapStatusNewBounds", {'bounds': latLngList});
   }
 
+  ///清除地图图层.
   Future<void> clearMap() {
     return _channel.invokeMethod("clearMap");
   }

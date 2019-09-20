@@ -28,7 +28,8 @@ const val METHOD_CLEAR_MAP = "clearMap"
 const val METHOD_ON_MAP_CLICK = "onMapClick"
 const val METHOD_ON_MARKER_CLICK = "onMarkerClick"
 const val METHOD_ON_MAP_POI_CLICK = "onMapPoiClick"
-
+const val METHOD_ON_MAP_DOUBLE_CLICK = "onMapDoubleClick"
+const val METHOD_ON_MAP_LONG_CLICK = "onMapLongClick"
 const val DEFAULT_MAPSTATUS_OVERLOOK = 0.0F
 const val DEFAULT_MAPSTATUS_ROTATE = 0.0F
 const val DEFAULT_MAPSTATUS_ZOOM = 12.0F
@@ -52,6 +53,34 @@ class FlutterBMapView(activity: Activity, messenger: BinaryMessenger, id:Int,
         baiduMap = mapView.map
         methodChannel = MethodChannel(messenger, "${BMAPVIEW_REGISTRY_NAME}_$id")
         methodChannel.setMethodCallHandler(this)
+        setUpBaiduMap()
+    }
+
+    private fun setUpBaiduMap() {
+        baiduMap.setOnMapDoubleClickListener { latLng ->
+            methodChannel.invokeMethod(METHOD_ON_MAP_DOUBLE_CLICK, serializeLatLng(latLng))
+        }
+        baiduMap.setOnMapLongClickListener { latLng ->
+            methodChannel.invokeMethod(METHOD_ON_MAP_LONG_CLICK, serializeLatLng(latLng))
+        }
+        baiduMap.setOnMarkerClickListener { marker ->
+            methodChannel.invokeMethod(METHOD_ON_MARKER_CLICK, serializeMarker(marker))
+            true
+        }
+        baiduMap.setOnMapClickListener(object : OnMapClickListener {
+            override fun onMapClick(position: LatLng?) {
+                position?.let {
+                    methodChannel.invokeMethod(METHOD_ON_MAP_CLICK, serializeLatLng(it))
+                }
+            }
+
+            override fun onMapPoiClick(poi: MapPoi?): Boolean {
+                poi?.let {
+                    methodChannel.invokeMethod(METHOD_ON_MAP_POI_CLICK, serializeMapPoi(it))
+                }
+                return true
+            }
+        })
     }
 
 
@@ -72,24 +101,6 @@ class FlutterBMapView(activity: Activity, messenger: BinaryMessenger, id:Int,
             val markerOptions = call.arguments<List<Map<String, Any>>>()
             val markerOptionList = parseMarkerOptionsList(markerOptions)
             baiduMap.addOverlays(markerOptionList)
-            baiduMap.setOnMarkerClickListener { marker ->
-                methodChannel.invokeMethod(METHOD_ON_MARKER_CLICK, serializeMarker(marker))
-                true
-            }
-            baiduMap.setOnMapClickListener(object : OnMapClickListener {
-                override fun onMapClick(position: LatLng?) {
-                    position?.let {
-                        methodChannel.invokeMethod(METHOD_ON_MAP_CLICK, serializeLatLng(it))
-                    }
-                }
-
-                override fun onMapPoiClick(poi: MapPoi?): Boolean {
-                    poi?.let {
-                        methodChannel.invokeMethod(METHOD_ON_MAP_POI_CLICK, serializeMapPoi(it))
-                    }
-                    return true
-                }
-            })
             animateMapStatus(markerOptionList)
         }
         METHOD_ADD_TEXTS -> {
@@ -116,7 +127,7 @@ class FlutterBMapView(activity: Activity, messenger: BinaryMessenger, id:Int,
             val mapStatusParams = call.arguments<Map<String, Any?>>()
             val zoom = mapStatusParams["zoom"]
             val center = mapStatusParams["center"] as Map<*, *>
-            val latLng = LatLng(center["latitude"] as Double, center["longitude"] as Double)
+            val latLng = deserializeLatLng(center)
             val mapStatusUpdate = if (zoom == null) {
                 MapStatusUpdateFactory.newLatLng(latLng)
             } else {
@@ -130,7 +141,7 @@ class FlutterBMapView(activity: Activity, messenger: BinaryMessenger, id:Int,
             val latLngBounds = LatLngBounds.Builder().apply {
                 bounds.forEach {
                     val pairedLatLng = it as Map<*, *>
-                    val latLng = LatLng(pairedLatLng["latitude"] as Double, pairedLatLng["longitude"] as Double)
+                    val latLng = deserializeLatLng(pairedLatLng)
                     include(latLng)
                 }
             }.build()
