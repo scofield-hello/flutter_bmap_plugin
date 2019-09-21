@@ -72,6 +72,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
     int index = 0;
     List<MarkerOptions> markers = latLngList.map((position) {
       var option = MarkerOptions(
+          zIndex: 100,
           position: position,
           title: "P$index",
           icon: "assets/marker.png",

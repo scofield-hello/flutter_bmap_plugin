@@ -173,6 +173,9 @@ class MarkerOptions {
   final String title;
   final bool visible;
   final Map<dynamic, dynamic> extraInfo;
+
+  ///需要监听Marker点击事件时，需要设置一个比其他图层的zIndex大的值,
+  ///否则可能被其他图层覆盖导致无法触发回调函数.
   final int zIndex;
 
   Map<String, dynamic> asJson() {
