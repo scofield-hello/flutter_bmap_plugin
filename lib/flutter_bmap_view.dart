@@ -333,8 +333,57 @@ class Marker {
 }
 
 ///百度地图组件.
+/**
 class FlutterBMapView extends StatefulWidget {
-  FlutterBMapView({Key key,
+    FlutterBMapView({Key key,
+    this.controller,
+    this.onBMapViewCreated,
+    this.bMapViewOptions = const BMapViewOptions()})
+    : super(key: key);
+
+    final FlutterBMapViewController controller;
+    final BMapViewOptions bMapViewOptions;
+    final VoidCallback onBMapViewCreated;
+
+    @override
+    _FlutterBMapViewState createState() => _FlutterBMapViewState();
+}
+
+    class _FlutterBMapViewState extends State<FlutterBMapView>{
+    final _viewType = "com.chuangdun.flutter/FlutterBMapView";
+
+    @override
+    void initState() {
+    super.initState();
+    }
+
+    @override
+    Widget build(BuildContext context) {
+    return AndroidView(
+    viewType: _viewType,
+    creationParams: widget.bMapViewOptions.asJson(),
+    creationParamsCodec: const StandardMessageCodec(),
+    onPlatformViewCreated: _onPlatformViewCreated);
+    }
+
+    void _onPlatformViewCreated(int id) {
+    if (widget.controller != null) {
+    widget.controller.onCreate(_viewType, id);
+    }
+    if(widget.onBMapViewCreated != null){
+    widget.onBMapViewCreated();
+    }
+    }
+
+    @override
+    void dispose() {
+    super.dispose();
+    }
+}
+ */
+
+class FlutterBMapView extends StatelessWidget {
+  const FlutterBMapView({Key key,
     this.controller,
     this.onBMapViewCreated,
     this.bMapViewOptions = const BMapViewOptions()})
@@ -344,39 +393,24 @@ class FlutterBMapView extends StatefulWidget {
   final BMapViewOptions bMapViewOptions;
   final VoidCallback onBMapViewCreated;
 
-  @override
-  _FlutterBMapViewState createState() => _FlutterBMapViewState();
-}
-
-class _FlutterBMapViewState extends State<FlutterBMapView>{
   final _viewType = "com.chuangdun.flutter/FlutterBMapView";
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
     return AndroidView(
         viewType: _viewType,
-        creationParams: widget.bMapViewOptions.asJson(),
+        creationParams: bMapViewOptions.asJson(),
         creationParamsCodec: const StandardMessageCodec(),
         onPlatformViewCreated: _onPlatformViewCreated);
   }
 
   void _onPlatformViewCreated(int id) {
-    if (widget.controller != null) {
-      widget.controller.onCreate(_viewType, id);
+    if (controller != null) {
+      controller.onCreate(_viewType, id);
     }
-    if(widget.onBMapViewCreated != null){
-      widget.onBMapViewCreated();
+    if (onBMapViewCreated != null) {
+      onBMapViewCreated();
     }
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 }
 
