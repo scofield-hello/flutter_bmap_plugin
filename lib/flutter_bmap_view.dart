@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -287,7 +288,8 @@ class TexturePolylineOptions {
       'customTextureList': customTextureList,
       'textureIndex': textureIndex,
       'width': width,
-      'dottedLine': dottedLine
+      'dottedLine': dottedLine,
+      'extraInfo': extraInfo
     };
   }
 }
@@ -332,18 +334,27 @@ class Marker {
 
 ///百度地图组件.
 class FlutterBMapView extends StatefulWidget {
-  FlutterBMapView({Key key, this.controller, this.bMapViewOptions = const BMapViewOptions()})
+  FlutterBMapView({Key key,
+    this.controller,
+    this.onBMapViewCreated,
+    this.bMapViewOptions = const BMapViewOptions()})
       : super(key: key);
 
   final FlutterBMapViewController controller;
   final BMapViewOptions bMapViewOptions;
+  final VoidCallback onBMapViewCreated;
 
   @override
   _FlutterBMapViewState createState() => _FlutterBMapViewState();
 }
 
-class _FlutterBMapViewState extends State<FlutterBMapView> {
+class _FlutterBMapViewState extends State<FlutterBMapView>{
   final _viewType = "com.chuangdun.flutter/FlutterBMapView";
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -357,6 +368,9 @@ class _FlutterBMapViewState extends State<FlutterBMapView> {
   void _onPlatformViewCreated(int id) {
     if (widget.controller != null) {
       widget.controller.onCreate(_viewType, id);
+    }
+    if(widget.onBMapViewCreated != null){
+      widget.onBMapViewCreated();
     }
   }
 
@@ -373,11 +387,15 @@ class FlutterBMapViewController {
   final _onMapClick = StreamController<LatLng>.broadcast();
 
   Stream<LatLng> get onMapClick => _onMapClick.stream;
+
   ///地图长点击事件.
   final _onMapLongClick = StreamController<LatLng>.broadcast();
+
   Stream<LatLng> get onMapLongClick => _onMapLongClick.stream;
+
   ///地图双击事件.
   final _onMapDoubleClick = StreamController<LatLng>.broadcast();
+
   Stream<LatLng> get onMapDoubleClick => _onMapDoubleClick.stream;
 
   ///地图MapPoi点击事件.
@@ -494,5 +512,13 @@ class FlutterBMapViewController {
   ///清除地图图层.
   Future<void> clearMap() {
     return _channel.invokeMethod("clearMap");
+  }
+
+  void dispose(){
+    _onMapClick.close();
+    _onMapLongClick.close();
+    _onMapDoubleClick.close();
+    _onMapPoiClick.close();
+    _onMarkerClick.close();
   }
 }

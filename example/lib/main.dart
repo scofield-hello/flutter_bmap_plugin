@@ -10,12 +10,13 @@ class MyApp extends StatefulWidget {
   _MyAppState createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
   FlutterBMapViewController _controller;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _controller = FlutterBMapViewController();
     _controller.onMarkerClick.listen((Marker marker) async {
       var extraInfo = marker.extraInfo;
@@ -50,7 +51,8 @@ class _MyAppState extends State<MyApp> {
         children: <Widget>[
           Container(
             height: 300,
-            child: FlutterBMapView(controller: _controller),
+            child: FlutterBMapView(controller: _controller,
+              onBMapViewCreated: _onBMapViewCreated),
           ),
           FlatButton(onPressed: _addMarkers, child: Text("添加标注点")),
           FlatButton(onPressed: _addTextOptionsList, child: Text("添加文本信息")),
@@ -59,6 +61,10 @@ class _MyAppState extends State<MyApp> {
         ],
       ),
     ));
+  }
+
+  void _onBMapViewCreated(){
+    _controller.setMapViewResume();
   }
 
   void _addMarkers() {
@@ -120,5 +126,32 @@ class _MyAppState extends State<MyApp> {
       LatLng(latitude: 30.285153, longitude: 120.154753),
       LatLng(latitude: 30.285253, longitude: 120.155733),
     ];
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    WidgetsBinding.instance.removeObserver(this);
+    _controller.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch(state){
+      case AppLifecycleState.resumed:
+        print("didChangeAppLifecycleState:resume");
+        _controller.setMapViewResume();
+        break;
+      case AppLifecycleState.inactive:
+        print("didChangeAppLifecycleState:inactive");
+        break;
+      case AppLifecycleState.paused:
+        print("didChangeAppLifecycleState:pause");
+        _controller.setMapViewPause();
+        break;
+      case AppLifecycleState.suspending:
+        print("didChangeAppLifecycleState:suspending");
+        break;
+    }
   }
 }

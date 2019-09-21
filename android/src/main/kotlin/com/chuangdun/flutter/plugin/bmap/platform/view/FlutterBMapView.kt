@@ -1,6 +1,7 @@
 package com.chuangdun.flutter.plugin.bmap.platform.view
 
 import android.app.Activity
+import android.util.Log
 import android.view.View
 import com.baidu.mapapi.map.*
 import com.baidu.mapapi.map.BaiduMap.OnMapClickListener
@@ -30,11 +31,7 @@ const val METHOD_ON_MARKER_CLICK = "onMarkerClick"
 const val METHOD_ON_MAP_POI_CLICK = "onMapPoiClick"
 const val METHOD_ON_MAP_DOUBLE_CLICK = "onMapDoubleClick"
 const val METHOD_ON_MAP_LONG_CLICK = "onMapLongClick"
-const val DEFAULT_MAPSTATUS_OVERLOOK = 0.0F
-const val DEFAULT_MAPSTATUS_ROTATE = 0.0F
-const val DEFAULT_MAPSTATUS_ZOOM = 12.0F
-const val DEFAULT_MAPSTATUS_LATITUDE = 39.914935
-const val DEFAULT_MAPSTATUS_LONGITUDE = 116.403119
+
 
 class FlutterBMapView(activity: Activity, messenger: BinaryMessenger, id:Int,
                       createParams: Map<String,*>?): PlatformView,MethodChannel.MethodCallHandler{
@@ -46,6 +43,7 @@ class FlutterBMapView(activity: Activity, messenger: BinaryMessenger, id:Int,
     private var methodChannel: MethodChannel
 
     init {
+        Log.i(tag, "FlutterBMapView init.")
         mapView = if (createParams == null)
             MapView(activityRef.get())
         else
@@ -53,10 +51,10 @@ class FlutterBMapView(activity: Activity, messenger: BinaryMessenger, id:Int,
         baiduMap = mapView.map
         methodChannel = MethodChannel(messenger, "${BMAPVIEW_REGISTRY_NAME}_$id")
         methodChannel.setMethodCallHandler(this)
-        setUpBaiduMap()
+        setUpMapListeners()
     }
 
-    private fun setUpBaiduMap() {
+    private fun setUpMapListeners() {
         baiduMap.setOnMapDoubleClickListener { latLng ->
             methodChannel.invokeMethod(METHOD_ON_MAP_DOUBLE_CLICK, serializeLatLng(latLng))
         }
@@ -86,17 +84,29 @@ class FlutterBMapView(activity: Activity, messenger: BinaryMessenger, id:Int,
 
 
     override fun getView(): View {
+        Log.i(tag, "getView: $mapView")
         return mapView
     }
 
     override fun dispose() {
+        Log.i(tag, "FlutterBMapView disposed.")
         mapView.onDestroy()
+        Log.i(tag, "MapView destroyed.")
     }
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) = when (call.method) {
-        METHOD_MAPVIEW_RESUME -> mapView.onResume()
-        METHOD_MAPVIEW_PAUSE -> mapView.onPause()
-        METHOD_MAPVIEW_DESTROY -> mapView.onDestroy()
+        METHOD_MAPVIEW_RESUME -> {
+            Log.i(tag, "MapView onResume.")
+            mapView.onResume()
+        }
+        METHOD_MAPVIEW_PAUSE -> {
+            Log.i(tag, "MapView onPause.")
+            mapView.onPause()
+        }
+        METHOD_MAPVIEW_DESTROY -> {
+            Log.i(tag, "MapView onDestroy.")
+            mapView.onDestroy()
+        }
         METHOD_ADD_MARKERS -> {
             val markerOptions = call.arguments<List<Map<String, Any>>>()
             val markerOptionList = parseMarkerOptionsList(markerOptions)

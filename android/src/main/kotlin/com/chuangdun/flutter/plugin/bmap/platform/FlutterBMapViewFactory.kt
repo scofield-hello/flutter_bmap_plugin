@@ -19,8 +19,10 @@ class FlutterBMapViewFactory(activity: Activity, private val messenger: BinaryMe
         Preconditions.checkNotNull(context)
         Preconditions.checkNotNull(activityRef.get())
         val activity = activityRef.get()
+
         require((createParams == null || createParams is HashMap<*, *>)) { "地图初始化参数有误." }
-        val nullableParams: HashMap<String, *> ? = if (createParams == null) null else createParams as HashMap<String, *>
+        //val nullableParams: HashMap<String, *> ? = if (createParams == null) null else createParams as HashMap<String, *>
+        val nullableParams = createParams as Map<String, *>?
         return FlutterBMapView(activity = activity!!,
                 messenger = messenger, id = id, createParams = nullableParams)
     }
