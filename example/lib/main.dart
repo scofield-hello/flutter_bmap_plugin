@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bmap_plugin/flutter_bmap_plugin.dart';
 
 void main() => runApp(MyApp());
@@ -10,14 +11,19 @@ class MyApp extends StatefulWidget {
   _MyAppState createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   FlutterBMapViewController _controller;
+  BDLocationClient _bdLocationClient;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _controller = FlutterBMapViewController();
+    _bdLocationClient = BDLocationClient();
+    _bdLocationClient.onReceiveLocation.listen((location) {
+      print(location.toString());
+    });
     _controller.onMarkerClick.listen((Marker marker) async {
       var extraInfo = marker.extraInfo;
       var name = extraInfo['name'];
@@ -32,7 +38,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
     _controller.onMapLongClick.listen((LatLng latLng) async {
       print(latLng.asJson());
     });
-    _controller.onMapDoubleClick.listen((LatLng latLng) async{
+    _controller.onMapDoubleClick.listen((LatLng latLng) async {
       print(latLng.asJson());
     });
     _controller.onMapPoiClick.listen((MapPoi poi) async {
@@ -51,20 +57,48 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
         children: <Widget>[
           Container(
             height: 300,
-            child: FlutterBMapView(controller: _controller,
-              onBMapViewCreated: _onBMapViewCreated),
+            child: FlutterBMapView(controller: _controller, onBMapViewCreated: _onBMapViewCreated),
           ),
           FlatButton(onPressed: _addMarkers, child: Text("添加标注点")),
           FlatButton(onPressed: _addTextOptionsList, child: Text("添加文本信息")),
           FlatButton(onPressed: _addPolylineOptions, child: Text("画折线")),
-          FlatButton(onPressed: () => _controller.clearMap(), child: Text("清除图层"))
+          FlatButton(onPressed: () => _controller.clearMap(), child: Text("清除图层")),
+          FlatButton(onPressed: _startLocation, child: Text("开始定位")),
+          FlatButton(onPressed: _requestLocation, child: Text("单次定位")),
+          FlatButton(onPressed: _stopLocation, child: Text("停止定位")),
         ],
       ),
     ));
   }
 
-  void _onBMapViewCreated(){
+  void _onBMapViewCreated() {
     _controller.setMapViewResume();
+  }
+
+  void _startLocation() {
+    try {
+      var options =
+      LocationClientOption(coorType: CoorType.BD09ll, prodName: "Flutter Plugin Test");
+      _bdLocationClient.startLocation(options);
+    } on PlatformException catch (e) {
+      print(e);
+    }
+  }
+
+  void _requestLocation() {
+    try {
+      _bdLocationClient.requestLocation();
+    } on PlatformException catch (e) {
+      print(e);
+    }
+  }
+
+  void _stopLocation() {
+    try {
+      _bdLocationClient.stopLocation();
+    } on PlatformException catch (e) {
+      print(e);
+    }
   }
 
   void _addMarkers() {
@@ -107,15 +141,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
     for (var index = 0; index < latLngList.length - 1; index++) {
       textureIndex.add(intRandom.nextInt(customTextureList.length));
     }
-    var extraInfo = const<String, dynamic>{
-      'name': "Polyline",
-      'anything': "..."
-    };
+    var extraInfo = const <String, dynamic>{'name': "Polyline", 'anything': "..."};
     var texturePolyline =
-        TexturePolylineOptions(latLngList,
-            customTextureList,
-            textureIndex,
-            extraInfo: extraInfo);
+    TexturePolylineOptions(latLngList, customTextureList, textureIndex, extraInfo: extraInfo);
     _controller.addTexturePolyline(texturePolyline);
   }
 
@@ -133,12 +161,14 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
   void dispose() {
     super.dispose();
     WidgetsBinding.instance.removeObserver(this);
+    _stopLocation();
+    _bdLocationClient.dispose();
     _controller.dispose();
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    switch(state){
+    switch (state) {
       case AppLifecycleState.resumed:
         print("didChangeAppLifecycleState:resume");
         _controller.setMapViewResume();

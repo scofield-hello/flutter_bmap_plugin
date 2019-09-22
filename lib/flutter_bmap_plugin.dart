@@ -1,3 +1,2 @@
 export 'flutter_bmap_view.dart';
-
-class FlutterBMapPlugin {}
+export 'location_client.dart';
