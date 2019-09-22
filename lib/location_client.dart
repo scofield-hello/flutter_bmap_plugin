@@ -132,9 +132,16 @@ class Address {
   final String street;
   final String address;
 
-  const Address(
-      {this.adcode, this.countryCode, this.country, this.province, this.cityCode, this.city,
-        this.district, this.streetNumber, this.street, this.address});
+  const Address({this.adcode,
+    this.countryCode,
+    this.country,
+    this.province,
+    this.cityCode,
+    this.city,
+    this.district,
+    this.streetNumber,
+    this.street,
+    this.address});
 
   static fromJson(Map<dynamic, dynamic> address) {
     return Address(
@@ -147,8 +154,7 @@ class Address {
         district: address["district"],
         streetNumber: address["streetNumber"],
         street: address["street"],
-        address: address["address"]
-    );
+        address: address["address"]);
   }
 }
 
@@ -206,19 +212,56 @@ class BDLocation {
   final String vdrJsonString;
   final int describeContents;
 
-  const BDLocation(
-      {this.time, this.country, this.countryCode, this.province, this.radius, this.city,
-        this.cityCode, this.adCode, this.addrStr, this.address, this.altitude, this.latitude, this.longitude,
-        this.coorType, this.delayTime, this.direction, this.district, this.floor,
-        this.gpsAccuracyStatus, this.gpsCheckStatus, this.indoorLocationSource,
-        this.indoorLocationSurpport, this.indoorLocationSurpportBuidlingID,
-        this.indoorLocationSurpportBuidlingName, this.indoorNetworkState, this.buildingID,
-        this.buildingName, this.indoorSurpportPolygon, this.isCellChangeFlag, this.locType,
-        this.locTypeDescription, this.isInIndoorPark, this.isIndoorLocMode, this.isNrlAvailable,
-        this.isParkAvailable, this.locationDescribe, this.locationID, this.locationWhere,
-        this.networkLocationType, this.nrlLat, this.nrlLon, this.nrlResult, this.roadLocString,
-        this.satelliteNumber, this.speed, this.street, this.streetNumber, this.userIndoorState,
-        this.vdrJsonString, this.describeContents});
+  const BDLocation({this.time,
+    this.country,
+    this.countryCode,
+    this.province,
+    this.radius,
+    this.city,
+    this.cityCode,
+    this.adCode,
+    this.addrStr,
+    this.address,
+    this.altitude,
+    this.latitude,
+    this.longitude,
+    this.coorType,
+    this.delayTime,
+    this.direction,
+    this.district,
+    this.floor,
+    this.gpsAccuracyStatus,
+    this.gpsCheckStatus,
+    this.indoorLocationSource,
+    this.indoorLocationSurpport,
+    this.indoorLocationSurpportBuidlingID,
+    this.indoorLocationSurpportBuidlingName,
+    this.indoorNetworkState,
+    this.buildingID,
+    this.buildingName,
+    this.indoorSurpportPolygon,
+    this.isCellChangeFlag,
+    this.locType,
+    this.locTypeDescription,
+    this.isInIndoorPark,
+    this.isIndoorLocMode,
+    this.isNrlAvailable,
+    this.isParkAvailable,
+    this.locationDescribe,
+    this.locationID,
+    this.locationWhere,
+    this.networkLocationType,
+    this.nrlLat,
+    this.nrlLon,
+    this.nrlResult,
+    this.roadLocString,
+    this.satelliteNumber,
+    this.speed,
+    this.street,
+    this.streetNumber,
+    this.userIndoorState,
+    this.vdrJsonString,
+    this.describeContents});
 
   static fromJson(Map<dynamic, dynamic> json) {
     return BDLocation(
@@ -271,8 +314,7 @@ class BDLocation {
         streetNumber: json["streetNumber"],
         userIndoorState: json["userIndoorState"],
         vdrJsonString: json["vdrJsonString"],
-        describeContents: json["descriptionContent"]
-    );
+        describeContents: json["descriptionContent"]);
   }
 }
 

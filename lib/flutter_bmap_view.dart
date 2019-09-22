@@ -32,8 +32,10 @@ class LogoPosition {
 ///经纬度信息.
 class LatLng {
   const LatLng({this.latitude, this.longitude});
+
   ///纬度.
   final double latitude;
+
   ///经度.
   final double longitude;
 
@@ -257,9 +259,7 @@ class TextOptions {
 ///自定义折线PolylineOptions.
 class TexturePolylineOptions {
   TexturePolylineOptions(this.points, this.customTextureList, this.textureIndex,
-      {this.width = 10,
-        this.dottedLine = true,
-        this.extraInfo=const<dynamic, dynamic>{}})
+      {this.width = 10, this.dottedLine = true, this.extraInfo = const <dynamic, dynamic>{}})
       : assert(points.length > 1),
         assert(customTextureList.isNotEmpty),
         assert(textureIndex.length == points.length - 1);
@@ -278,6 +278,7 @@ class TexturePolylineOptions {
 
   ///折线绘制资源索引.
   final List<int> textureIndex;
+
   ///额外信息.
   final Map<dynamic, dynamic> extraInfo;
 
@@ -337,7 +338,7 @@ class Marker {
 
 ///百度地图组件.
 /**
-class FlutterBMapView extends StatefulWidget {
+    class FlutterBMapView extends StatefulWidget {
     FlutterBMapView({Key key,
     this.controller,
     this.onBMapViewCreated,
@@ -350,7 +351,7 @@ class FlutterBMapView extends StatefulWidget {
 
     @override
     _FlutterBMapViewState createState() => _FlutterBMapViewState();
-}
+    }
 
     class _FlutterBMapViewState extends State<FlutterBMapView>{
     final _viewType = "com.chuangdun.flutter/FlutterBMapView";
@@ -382,7 +383,7 @@ class FlutterBMapView extends StatefulWidget {
     void dispose() {
     super.dispose();
     }
-}
+    }
  */
 
 class FlutterBMapView extends StatelessWidget {
@@ -551,7 +552,7 @@ class FlutterBMapViewController {
     return _channel.invokeMethod("clearMap");
   }
 
-  void dispose(){
+  void dispose() {
     _onMapClick.close();
     _onMapLongClick.close();
     _onMapDoubleClick.close();
