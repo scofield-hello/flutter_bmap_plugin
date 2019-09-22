@@ -22,7 +22,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     _controller = FlutterBMapViewController();
     _bdLocationClient = BDLocationClient();
     _bdLocationClient.onReceiveLocation.listen((location) {
-      print(location.toString());
+      _controller.animateMapStatusUpdateNewLatLng(LatLng(
+          latitude: location.latitude,
+          longitude: location.longitude
+      ));
     });
     _controller.onMarkerClick.listen((Marker marker) async {
       var extraInfo = marker.extraInfo;
@@ -78,7 +81,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void _startLocation() {
     try {
       var options =
-      LocationClientOption(coorType: CoorType.BD09ll, prodName: "Flutter Plugin Test");
+      LocationClientOption(coorType: CoorType.bd09ll, prodName: "Flutter Plugin Test");
       _bdLocationClient.startLocation(options);
     } on PlatformException catch (e) {
       print(e);
