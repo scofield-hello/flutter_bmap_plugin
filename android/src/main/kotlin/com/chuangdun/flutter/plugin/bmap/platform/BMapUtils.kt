@@ -19,20 +19,20 @@ const val DEFAULT_MAPSTATUS_LONGITUDE = 116.403119
 fun initBMapViewOptions(createParams: Map<String, *>): BaiduMapOptions {
     Log.d("BMapUtils", "initBMapViewOptions:$createParams")
     val baiduMapOptions = BaiduMapOptions()
-    val compassEnabled = createParams.getOrElse("compassEnabled", {true})
-    val logoPosition = createParams.getOrElse("logoPosition", { LogoPosition.logoPostionleftBottom.name})
-    val mapType = createParams.getOrElse("mapType", { BaiduMap.MAP_TYPE_NORMAL})
-    val overlookingGesturesEnabled = createParams.getOrElse("overlookingGesturesEnabled", {true})
-    val rotateGesturesEnabled = createParams.getOrElse("rotateGesturesEnabled", {true})
-    val scaleControlEnabled = createParams.getOrElse("scaleControlEnabled", {true})
-    val scrollGesturesEnabled = createParams.getOrElse("scrollGesturesEnabled", {true})
-    val zoomControlsEnabled = createParams.getOrElse("zoomControlsEnabled", {true})
-    val zoomGesturesEnabled = createParams.getOrElse("zoomGesturesEnabled", {true})
-    val mapStatus = createParams.getOrElse("mapStatus", { hashMapOf<String, Any>()}) as Map<String, Any>
+    val compassEnabled = createParams.getOrElse("compassEnabled", { true })
+    val logoPosition = createParams.getOrElse("logoPosition", { LogoPosition.logoPostionleftBottom.name })
+    val mapType = createParams.getOrElse("mapType", { BaiduMap.MAP_TYPE_NORMAL })
+    val overlookingGesturesEnabled = createParams.getOrElse("overlookingGesturesEnabled", { true })
+    val rotateGesturesEnabled = createParams.getOrElse("rotateGesturesEnabled", { true })
+    val scaleControlEnabled = createParams.getOrElse("scaleControlEnabled", { true })
+    val scrollGesturesEnabled = createParams.getOrElse("scrollGesturesEnabled", { true })
+    val zoomControlsEnabled = createParams.getOrElse("zoomControlsEnabled", { true })
+    val zoomGesturesEnabled = createParams.getOrElse("zoomGesturesEnabled", { true })
+    val mapStatus = createParams.getOrElse("mapStatus", { hashMapOf<String, Any>() }) as Map<String, Any>
     val overlook = mapStatus.getOrElse("overlook", { DEFAULT_MAPSTATUS_OVERLOOK })
     val rotate = mapStatus.getOrElse("rotate", { DEFAULT_MAPSTATUS_ROTATE })
     val zoom = mapStatus.getOrElse("zoom", { DEFAULT_MAPSTATUS_ZOOM })
-    val target = mapStatus.getOrElse("target", { hashMapOf<String, Any>()}) as Map<String, Any>
+    val target = mapStatus.getOrElse("target", { hashMapOf<String, Any>() }) as Map<String, Any>
     val latitude = target.getOrElse("latitude", { DEFAULT_MAPSTATUS_LATITUDE })
     val longitude = target.getOrElse("longitude", { DEFAULT_MAPSTATUS_LONGITUDE })
 
@@ -231,6 +231,28 @@ fun parseMapStatusUpdateNewBoundsZoom(mapStatusParams: Map<String, Any?>): MapSt
     val paddingBottom = mapStatusParams["paddingBottom"] as Int
     val latLngBounds = parseLatLngBounds(bounds)
     return MapStatusUpdateFactory.newLatLngZoom(latLngBounds,
+            paddingLeft,
+            paddingTop,
+            paddingRight,
+            paddingBottom)
+}
+
+fun parseMapStatusUpdate(optionsList: List<OverlayOptions>,
+                         paddingLeft: Int = 100, paddingTop: Int = 100,
+                         paddingRight: Int = 100, paddingBottom: Int = 100): MapStatusUpdate {
+    val latLngBounds = LatLngBounds.Builder().apply {
+        optionsList.forEach {
+            when (it) {
+                is TextOptions -> include(it.position)
+                is MarkerOptions -> include(it.position)
+                is PolylineOptions -> {
+                    it.points.forEach { point -> include(point) }
+                }
+                else -> throw NotImplementedError("暂未实现该类型Overlay展示.${it.javaClass.simpleName}")
+            }
+        }
+    }.build()
+    return MapStatusUpdateFactory.newLatLngBounds(latLngBounds,
             paddingLeft,
             paddingTop,
             paddingRight,

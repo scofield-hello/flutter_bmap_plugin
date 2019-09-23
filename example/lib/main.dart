@@ -60,13 +60,30 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             height: 300,
             child: FlutterBMapView(controller: _controller, onBMapViewCreated: _onBMapViewCreated),
           ),
-          FlatButton(onPressed: _addMarkers, child: Text("添加标注点")),
-          FlatButton(onPressed: _addTextOptionsList, child: Text("添加文本信息")),
-          FlatButton(onPressed: _addPolylineOptions, child: Text("画折线")),
-          FlatButton(onPressed: () => _controller.clearMap(), child: Text("清除图层")),
-          FlatButton(onPressed: _startLocation, child: Text("开始定位")),
-          FlatButton(onPressed: _requestLocation, child: Text("单次定位")),
-          FlatButton(onPressed: _stopLocation, child: Text("停止定位")),
+          Row(children: <Widget>[
+            FlatButton(onPressed: _addMarkers, child: Text("添加标注点")),
+            FlatButton(onPressed: _addTextOptionsList, child: Text("添加文本信息")),
+          ]),
+          Row(children: <Widget>[
+            FlatButton(onPressed: _addPolylineOptions, child: Text("画折线")),
+            FlatButton(onPressed: () => _controller.clearMap(), child: Text("清除图层")),
+          ]),
+          Row(children: <Widget>[
+            FlatButton(onPressed: _startLocation, child: Text("开始定位")),
+            FlatButton(onPressed: _requestLocation, child: Text("单次定位")),
+            FlatButton(onPressed: _stopLocation, child: Text("停止定位")),
+          ]),
+          Row(children: <Widget>[
+            FlatButton(onPressed: _convert, child: Text("转换坐标")),
+            FlatButton(onPressed: _convertList, child: Text("转换坐标列表")),
+          ]),
+          Row(children: <Widget>[
+            FlatButton(onPressed: _getDistance, child: Text("计算距离")),
+            FlatButton(onPressed: _calculateArea, child: Text("计算面积")),
+          ]),
+          FlatButton(onPressed: _getNearestPointFromLine, child: Text("返回某点距线上最近的点")),
+          FlatButton(onPressed: _isCircleContainsPoint, child: Text("判断圆形是否包含传入的经纬度点")),
+          FlatButton(onPressed: _isPolygonContainsPoint, child: Text("返回一个点是否在一个多边形区域内")),
         ],
       ),
     ));
@@ -97,6 +114,76 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void _stopLocation() {
     try {
       _bdLocationClient.stopLocation();
+    } on PlatformException catch (e) {
+      print(e);
+    }
+  }
+
+  void _convert() async {
+    try {
+      var latLng = await BMapApiUtils.convert(CoordType.gps, _latLngList()[0]);
+      print(latLng.asJson());
+    } on PlatformException catch (e) {
+      print(e);
+    }
+  }
+
+  void _convertList() async {
+    try {
+      var latLngList = await BMapApiUtils.convertList(CoordType.gps, _latLngList());
+      print(latLngList);
+    } on PlatformException catch (e) {
+      print(e);
+    }
+  }
+
+  void _getDistance() async {
+    try {
+      var latLngList = _latLngList();
+      var distance = await BMapApiUtils.getDistance(latLngList[0], latLngList[1]);
+      print(distance);
+    } on PlatformException catch (e) {
+      print(e);
+    }
+  }
+
+  void _calculateArea() async {
+    try {
+      var latLngList = _latLngList();
+      var area = await BMapApiUtils.calculateArea(latLngList[0], latLngList[1]);
+      print(area);
+    } on PlatformException catch (e) {
+      print(e);
+    }
+  }
+
+  void _getNearestPointFromLine() async {
+    try {
+      var latLngList = _latLngList();
+      var point = await BMapApiUtils.getNearestPointFromLine(
+          latLngList, LatLng(latitude: 30.286253, longitude: 120.156733));
+      print(point.asJson());
+    } on PlatformException catch (e) {
+      print(e);
+    }
+  }
+
+  void _isCircleContainsPoint() async {
+    try {
+      var latLngList = _latLngList();
+      var contains = await BMapApiUtils.isCircleContainsPoint(latLngList[0], 1000, latLngList[1]);
+      print(contains);
+    } on PlatformException catch (e) {
+      print(e);
+    }
+  }
+
+  void _isPolygonContainsPoint() async {
+    try {
+      var latLngList = _latLngList();
+      var contains = await BMapApiUtils.isPolygonContainsPoint(
+          latLngList, LatLng(latitude: 30.286253, longitude: 120.156733));
+      print(contains);
     } on PlatformException catch (e) {
       print(e);
     }

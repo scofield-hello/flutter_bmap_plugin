@@ -10,12 +10,12 @@ import androidx.core.content.ContextCompat
 import com.baidu.location.BDAbstractLocationListener
 import com.baidu.location.BDLocation
 import com.baidu.location.LocationClient
+import com.baidu.location.LocationClientOption
+import com.chuangdun.flutter.plugin.bmap.FlutterBMapPlugin
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.PluginRegistry
 import java.lang.ref.WeakReference
-import com.baidu.location.LocationClientOption
-import com.chuangdun.flutter.plugin.bmap.FlutterBMapPlugin
 
 /**
  * 定位
@@ -25,9 +25,9 @@ class LocationHandler(activity: Activity) : MethodChannel.MethodCallHandler,
     private val tag = this.javaClass.simpleName
     private val activityRef = WeakReference<Activity>(activity)
     private val requestPermissionCode = 1
-    private val methodStartLocation = "startLocation"
-    private val methodRequestLocation = "requestLocation"
-    private val methodStopLocation = "stopLocation"
+    private val methodLocationStart = "startLocation"
+    private val methodLocationRequest = "requestLocation"
+    private val methodLocationStop = "stopLocation"
     private val permissions = arrayOf(
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION,
@@ -44,13 +44,13 @@ class LocationHandler(activity: Activity) : MethodChannel.MethodCallHandler,
             return
         }
         when (call.method) {
-            methodStartLocation -> {
+            methodLocationStart -> {
                 startLocation(call.arguments as Map<*, *>, result)
             }
-            methodRequestLocation -> {
+            methodLocationRequest -> {
                 requestLocation(result)
             }
-            methodStopLocation -> {
+            methodLocationStop -> {
                 stopLocation(result)
             }
             else -> result.notImplemented()

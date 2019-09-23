@@ -337,55 +337,6 @@ class Marker {
 }
 
 ///百度地图组件.
-/**
-    class FlutterBMapView extends StatefulWidget {
-    FlutterBMapView({Key key,
-    this.controller,
-    this.onBMapViewCreated,
-    this.bMapViewOptions = const BMapViewOptions()})
-    : super(key: key);
-
-    final FlutterBMapViewController controller;
-    final BMapViewOptions bMapViewOptions;
-    final VoidCallback onBMapViewCreated;
-
-    @override
-    _FlutterBMapViewState createState() => _FlutterBMapViewState();
-    }
-
-    class _FlutterBMapViewState extends State<FlutterBMapView>{
-    final _viewType = "com.chuangdun.flutter/FlutterBMapView";
-
-    @override
-    void initState() {
-    super.initState();
-    }
-
-    @override
-    Widget build(BuildContext context) {
-    return AndroidView(
-    viewType: _viewType,
-    creationParams: widget.bMapViewOptions.asJson(),
-    creationParamsCodec: const StandardMessageCodec(),
-    onPlatformViewCreated: _onPlatformViewCreated);
-    }
-
-    void _onPlatformViewCreated(int id) {
-    if (widget.controller != null) {
-    widget.controller.onCreate(_viewType, id);
-    }
-    if(widget.onBMapViewCreated != null){
-    widget.onBMapViewCreated();
-    }
-    }
-
-    @override
-    void dispose() {
-    super.dispose();
-    }
-    }
- */
-
 class FlutterBMapView extends StatelessWidget {
   const FlutterBMapView({Key key,
     this.controller,
@@ -397,7 +348,7 @@ class FlutterBMapView extends StatelessWidget {
   final BMapViewOptions bMapViewOptions;
   final VoidCallback onBMapViewCreated;
 
-  final _viewType = "com.chuangdun.flutter/FlutterBMapView";
+  final _viewType = "com.chuangdun.flutter/BMapApi.FlutterBMapView";
 
   @override
   Widget build(BuildContext context) {
@@ -479,15 +430,15 @@ class FlutterBMapViewController {
   }
 
   Future<void> setMapViewResume() {
-    return _channel.invokeMethod("onMapViewResume");
+    return _channel.invokeMethod("setMapViewResume");
   }
 
   Future<void> setMapViewPause() {
-    return _channel.invokeMethod("onMapViewPause");
+    return _channel.invokeMethod("setMapViewPause");
   }
 
   Future<void> setMapViewDestroy() {
-    return _channel.invokeMethod("onMapViewDestroy");
+    return _channel.invokeMethod("setMapViewDestroy");
   }
 
   ///绘制标注点.

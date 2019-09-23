@@ -6,7 +6,6 @@ import android.view.View
 import com.baidu.mapapi.map.*
 import com.baidu.mapapi.map.BaiduMap.OnMapClickListener
 import com.baidu.mapapi.model.LatLng
-import com.baidu.mapapi.model.LatLngBounds
 import com.chuangdun.flutter.plugin.bmap.BMAPVIEW_REGISTRY_NAME
 import com.chuangdun.flutter.plugin.bmap.platform.*
 import io.flutter.plugin.common.BinaryMessenger
@@ -15,31 +14,31 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.platform.PlatformView
 import java.lang.ref.WeakReference
 
-const val METHOD_MAPVIEW_RESUME = "onMapViewResume"
-const val METHOD_MAPVIEW_PAUSE = "onMapViewPause"
-const val METHOD_MAPVIEW_DESTROY = "onMapViewDestroy"
-const val METHOD_ADD_MARKERS = "addMarkers"
-const val METHOD_ADD_TEXTS = "addTexts"
-const val METHOD_ADD_TEXTURE_POLYLINE = "addTexturePolyline"
-const val METHOD_SHOW_INFO_WINDOW = "showInfoWindow"
-const val METHOD_HIDE_INFO_WINDOW = "hideInfoWindow"
-const val METHOD_ANIMATE_MAP_STATUS_LATLNG = "animateMapStatusNewLatLng"
-const val METHOD_ANIMATE_MAP_STATUS_BOUNDS = "animateMapStatusNewBounds"
-const val METHOD_ANIMATE_MAP_STATUS_BOUNDS_PADDING = "animateMapStatusNewBoundsPadding"
-const val METHOD_ANIMATE_MAP_STATUS_BOUNDS_ZOOM = "animateMapStatusNewBoundsZoom"
-const val METHOD_CLEAR_MAP = "clearMap"
-const val METHOD_ON_MAP_CLICK = "onMapClick"
-const val METHOD_ON_MARKER_CLICK = "onMarkerClick"
-const val METHOD_ON_MAP_POI_CLICK = "onMapPoiClick"
-const val METHOD_ON_MAP_DOUBLE_CLICK = "onMapDoubleClick"
-const val METHOD_ON_MAP_LONG_CLICK = "onMapLongClick"
-
-
 class FlutterBMapView(activity: Activity, messenger: BinaryMessenger, id:Int,
                       createParams: Map<String,*>?): PlatformView,MethodChannel.MethodCallHandler{
     private val tag = this.javaClass.simpleName
-    private val activityRef: WeakReference<Activity> = WeakReference(activity)
 
+    private val methodMapViewResume = "setMapViewResume"
+    private val methodMapViewPause = "setMapViewPause"
+    private val methodMapViewDestroy = "setMapViewDestroy"
+    private val methodAddMarkers = "addMarkers"
+    private val methodAddTexts = "addTexts"
+    private val methodAddTexturePolyline = "addTexturePolyline"
+    private val methodShowInfoWindow = "showInfoWindow"
+    private val methodHideInfoWindow = "hideInfoWindow"
+    private val methodAnimateMapStatusLatLng = "animateMapStatusNewLatLng"
+    private val methodAnimateMapStatusBounds = "animateMapStatusNewBounds"
+    private val methodAnimateMapStatusBoundsPadding = "animateMapStatusNewBoundsPadding"
+    private val methodAnimateMapStatusBoundsZoom = "animateMapStatusNewBoundsZoom"
+    private val methodClearMap = "clearMap"
+
+    private val callbackOnMapClick = "onMapClick"
+    private val callbackOnMarkerClick = "onMarkerClick"
+    private val callbackOnMapPoiClick = "onMapPoiClick"
+    private val callbackOnMapLongClick = "onMapLongClick"
+    private val callbackOnMapDoubleClick = "onMapDoubleClick"
+
+    private val activityRef: WeakReference<Activity> = WeakReference(activity)
     private val mapView: MapView
     private val baiduMap: BaiduMap
     private var methodChannel: MethodChannel
@@ -58,25 +57,25 @@ class FlutterBMapView(activity: Activity, messenger: BinaryMessenger, id:Int,
 
     private fun setUpMapListeners() {
         baiduMap.setOnMapDoubleClickListener { latLng ->
-            methodChannel.invokeMethod(METHOD_ON_MAP_DOUBLE_CLICK, serializeLatLng(latLng))
+            methodChannel.invokeMethod(callbackOnMapDoubleClick, serializeLatLng(latLng))
         }
         baiduMap.setOnMapLongClickListener { latLng ->
-            methodChannel.invokeMethod(METHOD_ON_MAP_LONG_CLICK, serializeLatLng(latLng))
+            methodChannel.invokeMethod(callbackOnMapLongClick, serializeLatLng(latLng))
         }
         baiduMap.setOnMarkerClickListener { marker ->
-            methodChannel.invokeMethod(METHOD_ON_MARKER_CLICK, serializeMarker(marker))
+            methodChannel.invokeMethod(callbackOnMarkerClick, serializeMarker(marker))
             true
         }
         baiduMap.setOnMapClickListener(object : OnMapClickListener {
             override fun onMapClick(position: LatLng?) {
                 position?.let {
-                    methodChannel.invokeMethod(METHOD_ON_MAP_CLICK, serializeLatLng(it))
+                    methodChannel.invokeMethod(callbackOnMapClick, serializeLatLng(it))
                 }
             }
 
             override fun onMapPoiClick(poi: MapPoi?): Boolean {
                 poi?.let {
-                    methodChannel.invokeMethod(METHOD_ON_MAP_POI_CLICK, serializeMapPoi(it))
+                    methodChannel.invokeMethod(callbackOnMapPoiClick, serializeMapPoi(it))
                 }
                 return true
             }
@@ -97,84 +96,65 @@ class FlutterBMapView(activity: Activity, messenger: BinaryMessenger, id:Int,
     }
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) = when (call.method) {
-        METHOD_MAPVIEW_RESUME -> {
+        methodMapViewResume -> {
             Log.i(tag, "MapView onResume.")
             mapView.onResume()
         }
-        METHOD_MAPVIEW_PAUSE -> {
+        methodMapViewPause -> {
             Log.i(tag, "MapView onPause.")
             mapView.onPause()
         }
-        METHOD_MAPVIEW_DESTROY -> {
+        methodMapViewDestroy -> {
             Log.i(tag, "MapView onDestroy.")
             mapView.onDestroy()
         }
-        METHOD_ADD_MARKERS -> {
+        methodAddMarkers -> {
             val markerOptions = call.arguments<List<Map<String, Any>>>()
             val markerOptionList = parseMarkerOptionsList(markerOptions)
             baiduMap.addOverlays(markerOptionList)
-            animateMapStatus(markerOptionList)
+            baiduMap.animateMapStatus(parseMapStatusUpdate(markerOptionList))
         }
-        METHOD_ADD_TEXTS -> {
+        methodAddTexts -> {
             val textOptionsParams = call.arguments<List<Map<String, Any?>>>()
             val textOptionList = parseTextOptionsList(textOptionsParams)
             baiduMap.addOverlays(textOptionList)
-            animateMapStatus(textOptionList)
+            baiduMap.animateMapStatus(parseMapStatusUpdate(textOptionList))
         }
-        METHOD_ADD_TEXTURE_POLYLINE -> {
+        methodAddTexturePolyline -> {
             val texturePolylineOptions = call.arguments<Map<String, Any?>>()
             val texturePolyline = parseTexturePolyline(texturePolylineOptions)
             baiduMap.addOverlay(texturePolyline)
-            animateMapStatus(listOf(texturePolyline))
+            baiduMap.animateMapStatus(parseMapStatusUpdate(listOf(texturePolyline)))
         }
-        METHOD_SHOW_INFO_WINDOW -> {
+        methodShowInfoWindow -> {
             val infoWindowParams = call.arguments<Map<String, Any?>>()
             val infoWindow = parseInfoWindow(infoWindowParams)
             baiduMap.showInfoWindow(infoWindow)
         }
-        METHOD_HIDE_INFO_WINDOW -> {
+        methodHideInfoWindow -> {
             baiduMap.hideInfoWindow()
         }
-        METHOD_ANIMATE_MAP_STATUS_LATLNG -> {
+        methodAnimateMapStatusLatLng -> {
             val mapStatusParams = call.arguments<Map<String, Any?>>()
             val mapStatusUpdate = parseMapStatusUpdateNewLatLng(mapStatusParams)
             baiduMap.animateMapStatus(mapStatusUpdate)
         }
-        METHOD_ANIMATE_MAP_STATUS_BOUNDS -> {
+        methodAnimateMapStatusBounds -> {
             val mapStatusParams = call.arguments<Map<String, Any?>>()
             val mapStatusUpdate = parseMapStatusUpdateNewBounds(mapStatusParams)
             baiduMap.animateMapStatus(mapStatusUpdate)
         }
-        METHOD_ANIMATE_MAP_STATUS_BOUNDS_PADDING -> {
+        methodAnimateMapStatusBoundsPadding -> {
             val mapStatusParams = call.arguments<Map<String, Any?>>()
             val mapStatusUpdate = parseMapStatusUpdateNewBoundsPadding(mapStatusParams)
             baiduMap.animateMapStatus(mapStatusUpdate)
         }
-        METHOD_ANIMATE_MAP_STATUS_BOUNDS_ZOOM -> {
+        methodAnimateMapStatusBoundsZoom -> {
             val mapStatusParams = call.arguments<Map<String, Any?>>()
             val mapStatusUpdate = parseMapStatusUpdateNewBoundsZoom(mapStatusParams)
             baiduMap.animateMapStatus(mapStatusUpdate)
         }
-        METHOD_CLEAR_MAP -> baiduMap.clear()
+        methodClearMap -> baiduMap.clear()
         else -> throw NotImplementedError("暂未实现该方法.${call.method}")
     }
-
-    private fun animateMapStatus(optionsList:List<OverlayOptions>){
-        val latLngBounds = LatLngBounds.Builder().apply {
-            optionsList.forEach{
-                when(it){
-                    is TextOptions -> include(it.position)
-                    is MarkerOptions -> include(it.position)
-                    is PolylineOptions -> {
-                        it.points.forEach { point -> include(point) }
-                    }
-                    else -> throw NotImplementedError("暂未实现该类型Overlay展示.${it.javaClass.simpleName}")
-                }
-            }
-        }.build()
-        val status = MapStatusUpdateFactory.newLatLngBounds(latLngBounds, 100, 100, 100, 100)
-        baiduMap.animateMapStatus(status)
-    }
-
-
 }

@@ -2,13 +2,15 @@ package com.chuangdun.flutter.plugin.bmap
 
 import com.baidu.mapapi.CoordType
 import com.baidu.mapapi.SDKInitializer
+import com.chuangdun.flutter.plugin.bmap.platform.BMapApiUtilsHandler
 import com.chuangdun.flutter.plugin.bmap.platform.FlutterBMapViewFactory
 import com.chuangdun.flutter.plugin.bmap.platform.LocationHandler
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.PluginRegistry.Registrar
 
-const val BMAPVIEW_REGISTRY_NAME = "com.chuangdun.flutter/FlutterBMapView"
-const val BDLOCATION_CHANEL_NAME = "com.chuangdun.flutter/BDLocation"
+const val BMAPVIEW_REGISTRY_NAME = "com.chuangdun.flutter/BMapApi.FlutterBMapView"
+const val LOCATION_CHANEL_NAME = "com.chuangdun.flutter/BMapApi.LocationClient"
+const val COORDINATE_CHANEL_NAME = "com.chuangdun.flutter/BMapApi.Utils"
 
 class FlutterBMapPlugin{
   companion object {
@@ -19,8 +21,10 @@ class FlutterBMapPlugin{
       FlutterBMapPlugin.registrar = registrar
       SDKInitializer.initialize(registrar.activity().applicationContext)
       SDKInitializer.setCoordType(CoordType.BD09LL)
-      methodChannel = MethodChannel(registrar.messenger(), BDLOCATION_CHANEL_NAME)
+      methodChannel = MethodChannel(registrar.messenger(), LOCATION_CHANEL_NAME)
       methodChannel.setMethodCallHandler(LocationHandler(registrar.activity()))
+      val coordinateChannel = MethodChannel(registrar.messenger(), COORDINATE_CHANEL_NAME)
+      coordinateChannel.setMethodCallHandler(BMapApiUtilsHandler)
       registrar.platformViewRegistry()
               .registerViewFactory(BMAPVIEW_REGISTRY_NAME,
                       FlutterBMapViewFactory(registrar.activity(), registrar.messenger()))
