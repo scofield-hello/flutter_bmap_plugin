@@ -1,4 +1,4 @@
-package com.chuangdun.flutter.plugin.bmap.platform.view
+package com.chuangdun.flutter.plugin.bmap.view
 
 import android.app.Activity
 import android.util.Log
@@ -6,8 +6,7 @@ import android.view.View
 import com.baidu.mapapi.map.*
 import com.baidu.mapapi.map.BaiduMap.OnMapClickListener
 import com.baidu.mapapi.model.LatLng
-import com.chuangdun.flutter.plugin.bmap.BMAPVIEW_REGISTRY_NAME
-import com.chuangdun.flutter.plugin.bmap.platform.*
+import com.chuangdun.flutter.plugin.bmap.*
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel

@@ -338,10 +338,11 @@ class Marker {
 
 ///百度地图组件.
 class FlutterBMapView extends StatelessWidget {
-  const FlutterBMapView({Key key,
-    this.controller,
-    this.onBMapViewCreated,
-    this.bMapViewOptions = const BMapViewOptions()})
+  const FlutterBMapView(
+      {Key key,
+      this.controller,
+      this.onBMapViewCreated,
+      this.bMapViewOptions = const BMapViewOptions()})
       : super(key: key);
 
   final FlutterBMapViewController controller;

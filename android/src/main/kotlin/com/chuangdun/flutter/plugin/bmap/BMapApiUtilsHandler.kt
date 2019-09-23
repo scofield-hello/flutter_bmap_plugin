@@ -1,4 +1,4 @@
-package com.chuangdun.flutter.plugin.bmap.platform
+package com.chuangdun.flutter.plugin.bmap
 
 import com.baidu.mapapi.model.LatLng
 import com.baidu.mapapi.utils.AreaUtil

@@ -1,4 +1,4 @@
-package com.chuangdun.flutter.plugin.bmap.platform
+package com.chuangdun.flutter.plugin.bmap
 
 import android.Manifest
 import android.app.Activity
@@ -11,7 +11,6 @@ import com.baidu.location.BDAbstractLocationListener
 import com.baidu.location.BDLocation
 import com.baidu.location.LocationClient
 import com.baidu.location.LocationClientOption
-import com.chuangdun.flutter.plugin.bmap.FlutterBMapPlugin
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.PluginRegistry

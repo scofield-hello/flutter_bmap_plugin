@@ -2,9 +2,6 @@ package com.chuangdun.flutter.plugin.bmap
 
 import com.baidu.mapapi.CoordType
 import com.baidu.mapapi.SDKInitializer
-import com.chuangdun.flutter.plugin.bmap.platform.BMapApiUtilsHandler
-import com.chuangdun.flutter.plugin.bmap.platform.FlutterBMapViewFactory
-import com.chuangdun.flutter.plugin.bmap.platform.LocationHandler
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.PluginRegistry.Registrar
 

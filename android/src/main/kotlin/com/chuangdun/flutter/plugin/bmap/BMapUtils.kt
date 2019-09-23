@@ -1,4 +1,4 @@
-package com.chuangdun.flutter.plugin.bmap.platform
+package com.chuangdun.flutter.plugin.bmap
 
 import android.os.Bundle
 import android.util.Log
@@ -6,8 +6,6 @@ import android.widget.TextView
 import com.baidu.mapapi.map.*
 import com.baidu.mapapi.model.LatLng
 import com.baidu.mapapi.model.LatLngBounds
-import com.chuangdun.flutter.plugin.bmap.FlutterBMapPlugin
-import com.chuangdun.flutter.plugin.bmap.R
 import java.io.Serializable
 
 const val DEFAULT_MAPSTATUS_OVERLOOK = 0.0F

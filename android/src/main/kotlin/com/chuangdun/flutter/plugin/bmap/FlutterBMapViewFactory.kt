@@ -1,8 +1,8 @@
-package com.chuangdun.flutter.plugin.bmap.platform
+package com.chuangdun.flutter.plugin.bmap
 
 import android.app.Activity
 import android.content.Context
-import com.chuangdun.flutter.plugin.bmap.platform.view.FlutterBMapView
+import com.chuangdun.flutter.plugin.bmap.view.FlutterBMapView
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.StandardMessageCodec
 import io.flutter.plugin.platform.PlatformView

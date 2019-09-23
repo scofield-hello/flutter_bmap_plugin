@@ -1,4 +1,4 @@
-package com.chuangdun.flutter.plugin.bmap.platform
+package com.chuangdun.flutter.plugin.bmap
 
 import android.graphics.BitmapFactory
 import com.baidu.mapapi.map.BitmapDescriptor
