@@ -263,11 +263,11 @@ class ...State extends State<...Widget> with WidgetsBindingObserver{
 3.单次请求定位.
 ```dart
   void _requestLocation() {
-      try {
-        _bdLocationClient.requestLocation();
-      } on PlatformException catch (e) {
-        print(e);
-      }
+    try {
+      _bdLocationClient.requestLocation();
+    } on PlatformException catch (e) {
+      print(e);
+    }
   }
 ```
 
