@@ -2,10 +2,10 @@
 百度地图/定位插件
 
 ## 集成百度地图Android版本
-1. 先申请一个apikey
+1.先申请一个apikey
 http://lbsyun.baidu.com/apiconsole/key
 
-2. 修改 `你的项目目录/app/build.gradle`
+2.修改 `你的项目目录/app/build.gradle`
 在`android/defaultConfig`节点修改`manifestPlaceholders`,新增百度地图AK配置
 ```
 android {
@@ -226,13 +226,13 @@ class ...State extends State<...Widget> with WidgetsBindingObserver{
         {int paddingLeft = 0, int paddingTop = 0, int paddingRight = 0, int paddingBottom = 0});
 ```
 
-12. 清除地图图层
+12.清除地图图层
 ```dart
   _controller.clearMap();
 ```
 
 ## 定位相关使用方法
-1. 初始化
+1.初始化
 ```dart
   _bdLocationClient = _bdLocationClient = BDLocationClient();
   //监听位置回调.
@@ -240,9 +240,14 @@ class ...State extends State<...Widget> with WidgetsBindingObserver{
     _controller.animateMapStatusNewLatLng(
         LatLng(latitude: location.latitude, longitude: location.longitude));
   });
+
+  @override
+  void dispose(){
+    _bdLocationClient.dispose();
+  }
 ```
 
-2. 开启定位
+2.开启定位
 ```dart
   void _startLocation() {
     try {
@@ -255,7 +260,7 @@ class ...State extends State<...Widget> with WidgetsBindingObserver{
   }
 ```
 
-3. 单次请求定位.
+3.单次请求定位.
 ```dart
   void _requestLocation() {
       try {
@@ -266,7 +271,7 @@ class ...State extends State<...Widget> with WidgetsBindingObserver{
   }
 ```
 
-4. 停止定位
+4.停止定位
 ```dart
   void _stopLocation() {
     try {
@@ -279,7 +284,7 @@ class ...State extends State<...Widget> with WidgetsBindingObserver{
 
 ## 百度地图工具方法
 
-1. 坐标转换
+1.坐标转换
 ```dart
   ///单个坐标转换.
   void _convert() async {
@@ -302,7 +307,7 @@ class ...State extends State<...Widget> with WidgetsBindingObserver{
   }
 ```
 
-2. 计算两点间距离
+2.计算两点间距离
 ```dart
   void _getDistance() async {
     try {
@@ -315,7 +320,7 @@ class ...State extends State<...Widget> with WidgetsBindingObserver{
   }
 ```
 
-3. 计算面积
+3.计算面积
 ```dart
   void _calculateArea() async {
     try {
@@ -328,7 +333,7 @@ class ...State extends State<...Widget> with WidgetsBindingObserver{
   }
 ```
 
-4. 返回某点距线上最近的点
+4.返回某点距线上最近的点
 ```dart
   void _getNearestPointFromLine() async {
     try {
@@ -342,7 +347,7 @@ class ...State extends State<...Widget> with WidgetsBindingObserver{
   }
 ```
 
-5. 判断圆形是否包含传入的经纬度点
+5.判断圆形是否包含传入的经纬度点
 ```dart
   void _isCircleContainsPoint() async {
     try {
@@ -355,7 +360,7 @@ class ...State extends State<...Widget> with WidgetsBindingObserver{
   }
 ```
 
-6. 判断一个点是否在一个多边形区域内
+6.判断一个点是否在一个多边形区域内
 ```dart
   void _isPolygonContainsPoint() async {
     try {
