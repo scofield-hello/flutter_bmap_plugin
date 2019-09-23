@@ -5,6 +5,7 @@ import android.util.Log
 import android.widget.TextView
 import com.baidu.mapapi.map.*
 import com.baidu.mapapi.model.LatLng
+import com.baidu.mapapi.model.LatLngBounds
 import com.chuangdun.flutter.plugin.bmap.FlutterBMapPlugin
 import com.chuangdun.flutter.plugin.bmap.R
 import java.io.Serializable
@@ -173,6 +174,67 @@ fun parseTexturePolyline(texturePolylineOptions: Map<*, *>): PolylineOptions {
     }
     return polylineOptions
 
+}
+
+fun parseMapStatusUpdateNewLatLng(mapStatusParams: Map<String, Any?>): MapStatusUpdate {
+    val zoom = mapStatusParams["zoom"] as Double?
+    val center = mapStatusParams["center"] as Map<*, *>
+    val latLng = deserializeLatLng(center)
+    return if (zoom == null) {
+        MapStatusUpdateFactory.newLatLng(latLng)
+    } else {
+        MapStatusUpdateFactory.newLatLngZoom(latLng, zoom.toFloat())
+    }
+}
+
+fun parseMapStatusUpdateNewBounds(mapStatusParams: Map<String, Any?>): MapStatusUpdate {
+    val bounds = mapStatusParams["bounds"] as List<*>
+    val width = mapStatusParams["width"] as Int?
+    val height = mapStatusParams["height"] as Int?
+    val latLngBounds = parseLatLngBounds(bounds)
+    return if (width == null || height == null) {
+        MapStatusUpdateFactory.newLatLngBounds(latLngBounds)
+    } else {
+        MapStatusUpdateFactory.newLatLngBounds(latLngBounds, width, height)
+    }
+}
+
+fun parseLatLngBounds(latLngList: List<*>): LatLngBounds {
+    return LatLngBounds.Builder().apply {
+        latLngList.forEach {
+            val pairedLatLng = it as Map<*, *>
+            val latLng = deserializeLatLng(pairedLatLng)
+            include(latLng)
+        }
+    }.build()
+}
+
+fun parseMapStatusUpdateNewBoundsPadding(mapStatusParams: Map<String, Any?>): MapStatusUpdate {
+    val bounds = mapStatusParams["bounds"] as List<*>
+    val paddingLeft = mapStatusParams["paddingLeft"] as Int
+    val paddingTop = mapStatusParams["paddingTop"] as Int
+    val paddingRight = mapStatusParams["paddingRight"] as Int
+    val paddingBottom = mapStatusParams["paddingBottom"] as Int
+    val latLngBounds = parseLatLngBounds(bounds)
+    return MapStatusUpdateFactory.newLatLngBounds(latLngBounds,
+            paddingLeft,
+            paddingTop,
+            paddingRight,
+            paddingBottom)
+}
+
+fun parseMapStatusUpdateNewBoundsZoom(mapStatusParams: Map<String, Any?>): MapStatusUpdate {
+    val bounds = mapStatusParams["bounds"] as List<*>
+    val paddingLeft = mapStatusParams["paddingLeft"] as Int
+    val paddingTop = mapStatusParams["paddingTop"] as Int
+    val paddingRight = mapStatusParams["paddingRight"] as Int
+    val paddingBottom = mapStatusParams["paddingBottom"] as Int
+    val latLngBounds = parseLatLngBounds(bounds)
+    return MapStatusUpdateFactory.newLatLngZoom(latLngBounds,
+            paddingLeft,
+            paddingTop,
+            paddingRight,
+            paddingBottom)
 }
 
 fun deserializeBundle(serializedBundle: Map<*, *>): Bundle {

@@ -25,6 +25,8 @@ const val METHOD_SHOW_INFO_WINDOW = "showInfoWindow"
 const val METHOD_HIDE_INFO_WINDOW = "hideInfoWindow"
 const val METHOD_ANIMATE_MAP_STATUS_LATLNG = "animateMapStatusNewLatLng"
 const val METHOD_ANIMATE_MAP_STATUS_BOUNDS = "animateMapStatusNewBounds"
+const val METHOD_ANIMATE_MAP_STATUS_BOUNDS_PADDING = "animateMapStatusNewBoundsPadding"
+const val METHOD_ANIMATE_MAP_STATUS_BOUNDS_ZOOM = "animateMapStatusNewBoundsZoom"
 const val METHOD_CLEAR_MAP = "clearMap"
 const val METHOD_ON_MAP_CLICK = "onMapClick"
 const val METHOD_ON_MARKER_CLICK = "onMarkerClick"
@@ -135,27 +137,22 @@ class FlutterBMapView(activity: Activity, messenger: BinaryMessenger, id:Int,
         }
         METHOD_ANIMATE_MAP_STATUS_LATLNG -> {
             val mapStatusParams = call.arguments<Map<String, Any?>>()
-            val zoom = mapStatusParams["zoom"]
-            val center = mapStatusParams["center"] as Map<*, *>
-            val latLng = deserializeLatLng(center)
-            val mapStatusUpdate = if (zoom == null) {
-                MapStatusUpdateFactory.newLatLng(latLng)
-            } else {
-                MapStatusUpdateFactory.newLatLngZoom(latLng, (zoom as Double).toFloat())
-            }
+            val mapStatusUpdate = parseMapStatusUpdateNewLatLng(mapStatusParams)
             baiduMap.animateMapStatus(mapStatusUpdate)
         }
         METHOD_ANIMATE_MAP_STATUS_BOUNDS -> {
             val mapStatusParams = call.arguments<Map<String, Any?>>()
-            val bounds = mapStatusParams["bounds"] as List<*>
-            val latLngBounds = LatLngBounds.Builder().apply {
-                bounds.forEach {
-                    val pairedLatLng = it as Map<*, *>
-                    val latLng = deserializeLatLng(pairedLatLng)
-                    include(latLng)
-                }
-            }.build()
-            val mapStatusUpdate = MapStatusUpdateFactory.newLatLngBounds(latLngBounds)
+            val mapStatusUpdate = parseMapStatusUpdateNewBounds(mapStatusParams)
+            baiduMap.animateMapStatus(mapStatusUpdate)
+        }
+        METHOD_ANIMATE_MAP_STATUS_BOUNDS_PADDING -> {
+            val mapStatusParams = call.arguments<Map<String, Any?>>()
+            val mapStatusUpdate = parseMapStatusUpdateNewBoundsPadding(mapStatusParams)
+            baiduMap.animateMapStatus(mapStatusUpdate)
+        }
+        METHOD_ANIMATE_MAP_STATUS_BOUNDS_ZOOM -> {
+            val mapStatusParams = call.arguments<Map<String, Any?>>()
+            val mapStatusUpdate = parseMapStatusUpdateNewBoundsZoom(mapStatusParams)
             baiduMap.animateMapStatus(mapStatusUpdate)
         }
         METHOD_CLEAR_MAP -> baiduMap.clear()
@@ -175,7 +172,7 @@ class FlutterBMapView(activity: Activity, messenger: BinaryMessenger, id:Int,
                 }
             }
         }.build()
-        val status = MapStatusUpdateFactory.newLatLngBounds(latLngBounds)
+        val status = MapStatusUpdateFactory.newLatLngBounds(latLngBounds, 100, 100, 100, 100)
         baiduMap.animateMapStatus(status)
     }
 

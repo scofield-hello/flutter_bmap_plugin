@@ -22,7 +22,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     _controller = FlutterBMapViewController();
     _bdLocationClient = BDLocationClient();
     _bdLocationClient.onReceiveLocation.listen((location) {
-      _controller.animateMapStatusUpdateNewLatLng(
+      _controller.animateMapStatusNewLatLng(
           LatLng(latitude: location.latitude, longitude: location.longitude));
     });
     _controller.onMarkerClick.listen((Marker marker) async {
@@ -31,7 +31,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       var address = extraInfo['address'];
       var infoWindow = InfoWindow(position: marker.position, info: "$name\n$address");
       _controller.showInfoWindow(infoWindow);
-      _controller.animateMapStatusUpdateNewLatLng(marker.position);
+      _controller.animateMapStatusNewLatLng(marker.position);
     });
     _controller.onMapClick.listen((LatLng latLng) async {
       _controller.hideInfoWindow();
@@ -79,7 +79,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void _startLocation() {
     try {
       var options =
-      LocationClientOption(coorType: CoorType.bd09ll, prodName: "Flutter Plugin Test");
+          LocationClientOption(coorType: CoorType.bd09ll, prodName: "Flutter Plugin Test");
       _bdLocationClient.startLocation(options);
     } on PlatformException catch (e) {
       print(e);
@@ -104,17 +104,16 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   void _addMarkers() {
     var latLngList = _latLngList();
-    int index = 0;
-    List<MarkerOptions> markers = latLngList.map((position) {
+    List<MarkerOptions> markers = [];
+    for (var index = 0; index < latLngList.length; index++) {
       var option = MarkerOptions(
           zIndex: 100,
-          position: position,
+          position: latLngList[index],
           title: "P$index",
           icon: "assets/marker.png",
           extraInfo: {'name': "P$index", 'address': "马塍路文三路口东部软件园创新大厦A-302"});
-      index++;
-      return option;
-    }).toList();
+      markers.add(option);
+    }
     markers.first.icon = "assets/Icon_start.png";
     markers.last.icon = "assets/Icon_end.png";
     _controller.addMarkerOverlays(markers);
@@ -122,12 +121,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   void _addTextOptionsList() {
     var latLngList = _latLngList();
-    int index = 0;
-    List<TextOptions> texts = latLngList.map((position) {
-      var option = TextOptions(position: position, text: "P$index", fontSize: 40);
-      index++;
-      return option;
-    }).toList();
+    List<TextOptions> texts = [];
+    for (var index = 0; index < latLngList.length; index++) {
+      var option = TextOptions(position: latLngList[index], text: "P$index", fontSize: 40);
+      texts.add(option);
+    }
     _controller.addTextOverlays(texts);
   }
 
@@ -146,7 +144,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     }
     var extraInfo = const <String, dynamic>{'name': "Polyline", 'anything': "..."};
     var texturePolyline =
-    TexturePolylineOptions(latLngList, customTextureList, textureIndex, extraInfo: extraInfo);
+        TexturePolylineOptions(latLngList, customTextureList, textureIndex, extraInfo: extraInfo);
     _controller.addTexturePolyline(texturePolyline);
   }
 

@@ -532,19 +532,54 @@ class FlutterBMapViewController {
   ///移动地图中心至指定经纬度.
   ///[latLng] 经纬度对象.
   ///[zoom] 地图缩放级别.
-  Future<void> animateMapStatusUpdateNewLatLng(LatLng latLng, {double zoom}) {
+  Future<void> animateMapStatusNewLatLng(LatLng latLng, {double zoom}) {
     return _channel
         .invokeMethod("animateMapStatusNewLatLng", {'center': latLng.asJson(), 'zoom': zoom});
   }
 
   ///移动地图中心至指定经纬度范围.
   ///[bounds] 经纬度范围.
-  Future<void> animateMapStatusUpdateNewBounds(List<LatLng> bounds) {
+  Future<void> animateMapStatusUpdateNewBounds(List<LatLng> bounds, {int width, int height}) {
     List<Map<String, dynamic>> latLngList = [];
     for (var options in bounds) {
       latLngList.add(options.asJson());
     }
-    return _channel.invokeMethod("animateMapStatusNewBounds", {'bounds': latLngList});
+    return _channel.invokeMethod(
+        "animateMapStatusNewBounds", {'bounds': latLngList, 'width': width, 'height': height});
+  }
+
+  ///移动地图中心至指定经纬度范围.
+  ///[bounds] 经纬度范围.
+  Future<void> animateMapStatusBoundsPadding(List<LatLng> bounds,
+      {int paddingLeft = 0, int paddingTop = 0, int paddingRight = 0, int paddingBottom = 0}) {
+    List<Map<String, dynamic>> latLngList = [];
+    for (var options in bounds) {
+      latLngList.add(options.asJson());
+    }
+    return _channel.invokeMethod("animateMapStatusNewBoundsPadding", {
+      'bounds': latLngList,
+      'paddingLeft': paddingLeft,
+      'paddingTop': paddingTop,
+      'paddingRight': paddingRight,
+      'paddingBottom': paddingBottom
+    });
+  }
+
+  ///移动地图中心至指定经纬度范围.
+  ///[bounds] 经纬度范围.
+  Future<void> animateMapStatusBoundsZoom(List<LatLng> bounds,
+      {int paddingLeft = 0, int paddingTop = 0, int paddingRight = 0, int paddingBottom = 0}) {
+    List<Map<String, dynamic>> latLngList = [];
+    for (var options in bounds) {
+      latLngList.add(options.asJson());
+    }
+    return _channel.invokeMethod("animateMapStatusNewBoundsZoom", {
+      'bounds': latLngList,
+      'paddingLeft': paddingLeft,
+      'paddingTop': paddingTop,
+      'paddingRight': paddingRight,
+      'paddingBottom': paddingBottom
+    });
   }
 
   ///清除地图图层.
