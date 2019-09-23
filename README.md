@@ -236,7 +236,7 @@ class ...State extends State<...Widget> with WidgetsBindingObserver{
 ## 定位相关使用方法
 1.初始化
 ```dart
-  _bdLocationClient = _bdLocationClient = BDLocationClient();
+  _bdLocationClient = BDLocationClient();
   //监听位置回调.
   _bdLocationClient.onReceiveLocation.listen((location) {
     _controller.animateMapStatusNewLatLng(
