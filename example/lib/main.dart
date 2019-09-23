@@ -115,6 +115,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       index++;
       return option;
     }).toList();
+    markers.first.icon = "assets/Icon_start.png";
+    markers.last.icon = "assets/Icon_end.png";
     _controller.addMarkerOverlays(markers);
   }
 

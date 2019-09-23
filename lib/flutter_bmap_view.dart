@@ -117,12 +117,12 @@ class InfoWindow {
       this.textColor = 0xFF000000,
       this.textSize = 14.0});
 
-  final LatLng position;
-  final String info;
-  final String tag;
-  final int yOffset;
-  final int textColor;
-  final double textSize;
+  LatLng position;
+  String info;
+  String tag;
+  int yOffset;
+  int textColor;
+  double textSize;
 
   Map<String, dynamic> asJson() {
     return <String, dynamic>{
@@ -150,7 +150,7 @@ class MarkerAnimateType {
 
 ///标注点对象.
 class MarkerOptions {
-  const MarkerOptions(
+  MarkerOptions(
       {this.position,
       this.title,
       this.icon,
@@ -164,21 +164,21 @@ class MarkerOptions {
       this.extraInfo = const <dynamic, dynamic>{},
       this.zIndex = 0});
 
-  final String icon;
-  final MarkerAnimateType animateType;
-  final double alpha;
-  final LatLng position;
-  final bool perspective;
-  final bool draggable;
-  final bool flat;
-  final double rotate;
-  final String title;
-  final bool visible;
-  final Map<dynamic, dynamic> extraInfo;
+  String icon;
+  MarkerAnimateType animateType;
+  double alpha;
+  LatLng position;
+  bool perspective;
+  bool draggable;
+  bool flat;
+  double rotate;
+  String title;
+  bool visible;
+  Map<dynamic, dynamic> extraInfo;
 
   ///需要监听Marker点击事件时，需要设置一个比其他图层的zIndex大的值,
   ///否则可能被其他图层覆盖导致无法触发回调函数.
-  final int zIndex;
+  int zIndex;
 
   Map<String, dynamic> asJson() {
     return <String, dynamic>{
@@ -214,7 +214,7 @@ class TextOptionsAlign {
 
 ///文本信息对象.
 class TextOptions {
-  const TextOptions(
+  TextOptions(
       {this.position,
       this.text,
       this.alignX = TextOptionsAlign.alignCenterHorizontal,
@@ -227,17 +227,17 @@ class TextOptions {
       this.rotate = 0.0,
       this.zIndex = 0});
 
-  final LatLng position;
-  final String text;
-  final TextOptionsAlign alignX;
-  final TextOptionsAlign alignY;
-  final int bgColor;
-  final bool visible;
-  final int fontColor;
-  final int fontSize;
-  final Map<dynamic, dynamic> extraInfo;
-  final double rotate;
-  final int zIndex;
+  LatLng position;
+  String text;
+  TextOptionsAlign alignX;
+  TextOptionsAlign alignY;
+  int bgColor;
+  bool visible;
+  int fontColor;
+  int fontSize;
+  Map<dynamic, dynamic> extraInfo;
+  double rotate;
+  int zIndex;
 
   Map<String, dynamic> asJson() {
     return <String, dynamic>{
@@ -265,22 +265,22 @@ class TexturePolylineOptions {
         assert(textureIndex.length == points.length - 1);
 
   ///绘制折线的经纬度列表.
-  final List<LatLng> points;
+  List<LatLng> points;
 
   ///折线宽度.
-  final int width;
+  int width;
 
   ///是否虚线.
-  final bool dottedLine;
+  bool dottedLine;
 
   ///自定义折线资源名列表.
-  final List<String> customTextureList;
+  List<String> customTextureList;
 
   ///折线绘制资源索引.
-  final List<int> textureIndex;
+  List<int> textureIndex;
 
   ///额外信息.
-  final Map<dynamic, dynamic> extraInfo;
+  Map<dynamic, dynamic> extraInfo;
 
   Map<String, dynamic> asJson() {
     List<Map<String, double>> latLngList = [];
@@ -300,7 +300,7 @@ class TexturePolylineOptions {
 
 ///MapPoi信息.
 class MapPoi {
-  MapPoi({this.uid, this.name, this.position});
+  const MapPoi({this.uid, this.name, this.position});
 
   final String uid;
   final String name;
