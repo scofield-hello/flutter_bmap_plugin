@@ -1,6 +1,8 @@
 # flutter_bmap_plugin
 百度地图/定位插件
 
+![](https://github.com/scofield-hello/flutter_bmap_plugin/blob/master/screenshot.png)
+
 ## 集成百度地图Android版本
 1.先申请一个apikey
 http://lbsyun.baidu.com/apiconsole/key
