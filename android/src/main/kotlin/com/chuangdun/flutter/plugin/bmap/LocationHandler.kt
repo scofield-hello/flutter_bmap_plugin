@@ -226,6 +226,12 @@ class LocationHandler(activity: Activity) : MethodChannel.MethodCallHandler,
             resultMap["userIndoorState"] = location?.userIndoorState
             resultMap["vdrJsonString"] = location?.vdrJsonString
             resultMap["descriptionContent"] = location?.describeContents()
+            val poiList = location?.poiList
+            val serializedPoiList = mutableListOf<Map<String, *>>()
+            poiList?.forEach {
+                serializedPoiList.add(mapOf("id" to it.id, "name" to it.name, "rank" to it.rank))
+            }
+            resultMap["poiList"] = serializedPoiList
             FlutterBMapPlugin.methodChannel.invokeMethod("onReceiveLocation", resultMap)
         }
     }

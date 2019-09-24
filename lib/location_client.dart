@@ -213,6 +213,7 @@ class BDLocation {
   final int userIndoorState;
   final String vdrJsonString;
   final int describeContents;
+  final List<dynamic> poiList;
 
   const BDLocation(
       {this.time,
@@ -264,7 +265,8 @@ class BDLocation {
       this.streetNumber,
       this.userIndoorState,
       this.vdrJsonString,
-      this.describeContents});
+      this.describeContents,
+      this.poiList});
 
   static fromJson(Map<dynamic, dynamic> json) {
     return BDLocation(
@@ -317,7 +319,8 @@ class BDLocation {
         streetNumber: json["streetNumber"],
         userIndoorState: json["userIndoorState"],
         vdrJsonString: json["vdrJsonString"],
-        describeContents: json["descriptionContent"]);
+        describeContents: json["descriptionContent"],
+        poiList: json["poiList"]);
   }
 }
 
