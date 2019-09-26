@@ -349,6 +349,10 @@ class BDLocationClient {
     }
   }
 
+  Future<bool> isStart() async {
+    return _channel.invokeMethod("isStart");
+  }
+
   Future<void> startLocation(LocationClientOption options) async {
     await _channel.invokeMethod("startLocation", options.asJson());
   }

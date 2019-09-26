@@ -310,6 +310,17 @@ class XxxState extends State<XxxWidget> with WidgetsBindingObserver{
   }
 ```
 
+5.判断是否启动定位
+```dart
+ void _isStart() async{
+    try {
+      bool start = await _bdLocationClient.isStart();
+      print(start);
+    } on PlatformException catch (e) {
+      print(e);
+    }
+  }
+```
 ## 百度地图工具方法
 
 1.坐标转换

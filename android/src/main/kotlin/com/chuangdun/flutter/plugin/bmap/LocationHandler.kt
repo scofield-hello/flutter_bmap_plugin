@@ -16,6 +16,12 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.PluginRegistry
 import java.lang.ref.WeakReference
 
+private const val REQUEST_PERMISSIONS = 1
+private const val METHOD_IS_START = "isStart"
+private const val METHOD_START_LOCATION = "startLocation"
+private const val METHOD_REQUEST_LOCATION = "requestLocation"
+private const val METHOD_STOP_LOCATION = "stopLocation"
+
 /**
  * 定位
  */
@@ -23,10 +29,7 @@ class LocationHandler(activity: Activity) : MethodChannel.MethodCallHandler,
         PluginRegistry.RequestPermissionsResultListener {
     private val tag = this.javaClass.simpleName
     private val activityRef = WeakReference<Activity>(activity)
-    private val requestPermissionCode = 1
-    private val methodLocationStart = "startLocation"
-    private val methodLocationRequest = "requestLocation"
-    private val methodLocationStop = "stopLocation"
+
     private val permissions = arrayOf(
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION,
@@ -43,15 +46,10 @@ class LocationHandler(activity: Activity) : MethodChannel.MethodCallHandler,
             return
         }
         when (call.method) {
-            methodLocationStart -> {
-                startLocation(call.arguments as Map<*, *>, result)
-            }
-            methodLocationRequest -> {
-                requestLocation(result)
-            }
-            methodLocationStop -> {
-                stopLocation(result)
-            }
+            METHOD_IS_START -> isStart(result)
+            METHOD_START_LOCATION -> startLocation(call.arguments as Map<*, *>, result)
+            METHOD_REQUEST_LOCATION -> requestLocation(result)
+            METHOD_STOP_LOCATION -> stopLocation(result)
             else -> result.notImplemented()
         }
     }
@@ -68,7 +66,7 @@ class LocationHandler(activity: Activity) : MethodChannel.MethodCallHandler,
     private fun requestPermissions() {
         val activity = activityRef.get()
         ActivityCompat.requestPermissions(activity!!,
-                permissions, requestPermissionCode)
+                permissions, REQUEST_PERMISSIONS)
     }
 
     private fun initLocationOptions(options: Map<*, *>): LocationClientOption {
@@ -99,6 +97,10 @@ class LocationHandler(activity: Activity) : MethodChannel.MethodCallHandler,
         }
         locationOption.isNeedNewVersionRgc = options["isNeedNewVersionRgc"] as Boolean
         return locationOption
+    }
+
+    private fun isStart(result: MethodChannel.Result) {
+        result.success(locationClient.isStarted)
     }
 
     private fun startLocation(options: Map<*, *>, result: MethodChannel.Result) {
@@ -146,7 +148,7 @@ class LocationHandler(activity: Activity) : MethodChannel.MethodCallHandler,
                                             permissions: Array<out String>?,
                                             result: IntArray?): Boolean {
         when (requestCode) {
-            requestPermissionCode -> {
+            REQUEST_PERMISSIONS -> {
                 var grantedAll = true
                 for (granted in result!!) {
                     grantedAll = grantedAll &&
