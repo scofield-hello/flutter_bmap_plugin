@@ -336,7 +336,7 @@ class BDLocationClient {
     _channel.setMethodCallHandler(_handleMessage);
   }
 
-  Stream<dynamic> get onReceiveLocation => _onReceiveLocation.stream;
+  Stream<BDLocation> get onReceiveLocation => _onReceiveLocation.stream;
 
   Future<Null> _handleMessage(MethodCall call) async {
     switch (call.method) {
