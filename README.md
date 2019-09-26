@@ -3,6 +3,15 @@
 
 ![](https://github.com/scofield-hello/flutter_bmap_plugin/blob/master/screenshot.png)
 
+## 在项目中添加插件依赖项
+在pubspec.yaml中添加插件依赖项
+
+```yaml
+  dependencies:
+    flutter_bmap_plugin:
+      git: git://github.com/scofield-hello/flutter_bmap_plugin.git
+```
+
 ## 集成百度地图Android版本
 1.先申请一个apikey
 http://lbsyun.baidu.com/apiconsole/key
