@@ -34,7 +34,7 @@ android {
 1.显示百度地图(FlutterBMapView)
 
 ```dart
-class ...State extends State<...Widget> with WidgetsBindingObserver{
+class XxxState extends State<XxxWidget> with WidgetsBindingObserver{
 
   FlutterBMapViewController _controller;
 
@@ -87,9 +87,11 @@ class ...State extends State<...Widget> with WidgetsBindingObserver{
     super.dispose();
     WidgetsBinding.instance.removeObserver(this);
     _controller.dispose();
-  }
+  } 
+}  
 ```
 2.处理地图点击事件
+
 ```dart
   _controller.onMapClick.listen((LatLng latLng) async {
     println(latLng.asJson());
@@ -97,6 +99,7 @@ class ...State extends State<...Widget> with WidgetsBindingObserver{
   });
 ```
 3.处理地图双击事件
+
 ```dart
   _controller.onMapDoubleClick.listen((LatLng latLng) async {
     print(latLng.asJson());
@@ -104,6 +107,7 @@ class ...State extends State<...Widget> with WidgetsBindingObserver{
 ```
 
 4.处理地图长点击事件
+
 ```dart
   _controller.onMapLongClick.listen((LatLng latLng) async {
     print(latLng.asJson());
@@ -111,6 +115,7 @@ class ...State extends State<...Widget> with WidgetsBindingObserver{
 ```
 
 5.处理标注点击事件
+
 ```dart
   _controller.onMarkerClick.listen((Marker marker) async {
     var extraInfo = marker.extraInfo;
@@ -119,6 +124,7 @@ class ...State extends State<...Widget> with WidgetsBindingObserver{
 ```
 
 6.处理Poi点击事件
+
 ```dart
   _controller.onMapPoiClick.listen((MapPoi poi) async {
     print(poi.asJson());
@@ -126,6 +132,7 @@ class ...State extends State<...Widget> with WidgetsBindingObserver{
 ```
 
 7.新增标注点
+
 ```dart
   ///测试点列表.
   List<LatLng> _latLngList() {
@@ -158,6 +165,7 @@ class ...State extends State<...Widget> with WidgetsBindingObserver{
   }
 ```
 8.显示文本信息
+
 ```dart
   void _addTextOptionsList() {
     var latLngList = _latLngList();
@@ -173,6 +181,7 @@ class ...State extends State<...Widget> with WidgetsBindingObserver{
 ```
 
 9.画折线(Texture)
+
 ```dart
   void _addPolylineOptions() {
     var latLngList = _latLngList();
@@ -196,6 +205,7 @@ class ...State extends State<...Widget> with WidgetsBindingObserver{
 ```
 
 10.显示信息窗InfoWindow
+
 ```dart
   _controller.onMarkerClick.listen((Marker marker) async {
       var extraInfo = marker.extraInfo;
@@ -213,6 +223,7 @@ class ...State extends State<...Widget> with WidgetsBindingObserver{
 ```
 
 11.设置地图显示范围
+
 ```dart
   ///设置地图中心点以及缩放级别.
   ///[latLng] 经纬度对象.
@@ -243,9 +254,11 @@ class ...State extends State<...Widget> with WidgetsBindingObserver{
 ```
 
 ## 定位相关使用方法
+
 1.初始化
+
 ```dart
-  _bdLocationClient = BDLocationClient();
+  final _bdLocationClient = BDLocationClient();
   //监听位置回调.
   _bdLocationClient.onReceiveLocation.listen((location) {
     _controller.animateMapStatusNewLatLng(
@@ -259,6 +272,7 @@ class ...State extends State<...Widget> with WidgetsBindingObserver{
 ```
 
 2.开启定位
+
 ```dart
   void _startLocation() {
     try {
@@ -272,6 +286,7 @@ class ...State extends State<...Widget> with WidgetsBindingObserver{
 ```
 
 3.单次请求定位.
+
 ```dart
   void _requestLocation() {
     try {
@@ -283,7 +298,9 @@ class ...State extends State<...Widget> with WidgetsBindingObserver{
 ```
 
 4.停止定位
+
 ```dart
+
   void _stopLocation() {
     try {
       _bdLocationClient.stopLocation();
@@ -296,6 +313,7 @@ class ...State extends State<...Widget> with WidgetsBindingObserver{
 ## 百度地图工具方法
 
 1.坐标转换
+
 ```dart
   ///单个坐标转换.
   void _convert() async {
@@ -319,6 +337,7 @@ class ...State extends State<...Widget> with WidgetsBindingObserver{
 ```
 
 2.计算两点间距离
+
 ```dart
   void _getDistance() async {
     try {
@@ -332,6 +351,7 @@ class ...State extends State<...Widget> with WidgetsBindingObserver{
 ```
 
 3.计算面积
+
 ```dart
   void _calculateArea() async {
     try {
@@ -345,6 +365,7 @@ class ...State extends State<...Widget> with WidgetsBindingObserver{
 ```
 
 4.返回某点距线上最近的点
+
 ```dart
   void _getNearestPointFromLine() async {
     try {
@@ -359,6 +380,7 @@ class ...State extends State<...Widget> with WidgetsBindingObserver{
 ```
 
 5.判断圆形是否包含传入的经纬度点
+
 ```dart
   void _isCircleContainsPoint() async {
     try {
@@ -372,6 +394,7 @@ class ...State extends State<...Widget> with WidgetsBindingObserver{
 ```
 
 6.判断一个点是否在一个多边形区域内
+
 ```dart
   void _isPolygonContainsPoint() async {
     try {
