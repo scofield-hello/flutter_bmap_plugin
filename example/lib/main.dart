@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -14,6 +15,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   FlutterBMapViewController _controller;
   BDLocationClient _bdLocationClient;
+  StreamSubscription<BDLocation> _subscription;
 
   @override
   void initState() {
@@ -21,7 +23,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     _controller = FlutterBMapViewController();
     _bdLocationClient = BDLocationClient();
-    _bdLocationClient.onReceiveLocation.listen((location) {
+    _subscription = _bdLocationClient.onReceiveLocation.listen((location) {
       _controller.animateMapStatusNewLatLng(
           LatLng(latitude: location.latitude, longitude: location.longitude));
     });
@@ -51,42 +53,42 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return MaterialApp(
         home: Scaffold(
-      appBar: AppBar(
-        title: const Text('FlutterBMapView'),
-      ),
-      body: Column(
-        children: <Widget>[
-          Container(
-            height: 300,
-            child: FlutterBMapView(controller: _controller, onBMapViewCreated: _onBMapViewCreated),
+          appBar: AppBar(
+            title: const Text('FlutterBMapView'),
           ),
-          Row(children: <Widget>[
-            FlatButton(onPressed: _addMarkers, child: Text("添加标注点")),
-            FlatButton(onPressed: _addTextOptionsList, child: Text("添加文本信息")),
-          ]),
-          Row(children: <Widget>[
-            FlatButton(onPressed: _addPolylineOptions, child: Text("画折线")),
-            FlatButton(onPressed: () => _controller.clearMap(), child: Text("清除图层")),
-          ]),
-          Row(children: <Widget>[
-            FlatButton(onPressed: _startLocation, child: Text("开始定位")),
-            FlatButton(onPressed: _requestLocation, child: Text("单次定位")),
-            FlatButton(onPressed: _stopLocation, child: Text("停止定位")),
-          ]),
-          Row(children: <Widget>[
-            FlatButton(onPressed: _convert, child: Text("转换坐标")),
-            FlatButton(onPressed: _convertList, child: Text("转换坐标列表")),
-          ]),
-          Row(children: <Widget>[
-            FlatButton(onPressed: _getDistance, child: Text("计算距离")),
-            FlatButton(onPressed: _calculateArea, child: Text("计算面积")),
-          ]),
-          FlatButton(onPressed: _getNearestPointFromLine, child: Text("返回某点距线上最近的点")),
-          FlatButton(onPressed: _isCircleContainsPoint, child: Text("判断圆形是否包含传入的经纬度点")),
-          FlatButton(onPressed: _isPolygonContainsPoint, child: Text("返回一个点是否在一个多边形区域内")),
-        ],
-      ),
-    ));
+          body: Column(
+            children: <Widget>[
+              Container(
+                height: 300,
+                child: FlutterBMapView(controller: _controller, onBMapViewCreated: _onBMapViewCreated),
+              ),
+              Row(children: <Widget>[
+                FlatButton(onPressed: _addMarkers, child: Text("添加标注点")),
+                FlatButton(onPressed: _addTextOptionsList, child: Text("添加文本信息")),
+              ]),
+              Row(children: <Widget>[
+                FlatButton(onPressed: _addPolylineOptions, child: Text("画折线")),
+                FlatButton(onPressed: () => _controller.clearMap(), child: Text("清除图层")),
+              ]),
+              Row(children: <Widget>[
+                FlatButton(onPressed: _startLocation, child: Text("开始定位")),
+                FlatButton(onPressed: _requestLocation, child: Text("单次定位")),
+                FlatButton(onPressed: _stopLocation, child: Text("停止定位")),
+              ]),
+              Row(children: <Widget>[
+                FlatButton(onPressed: _convert, child: Text("转换坐标")),
+                FlatButton(onPressed: _convertList, child: Text("转换坐标列表")),
+              ]),
+              Row(children: <Widget>[
+                FlatButton(onPressed: _getDistance, child: Text("计算距离")),
+                FlatButton(onPressed: _calculateArea, child: Text("计算面积")),
+              ]),
+              FlatButton(onPressed: _getNearestPointFromLine, child: Text("返回某点距线上最近的点")),
+              FlatButton(onPressed: _isCircleContainsPoint, child: Text("判断圆形是否包含传入的经纬度点")),
+              FlatButton(onPressed: _isPolygonContainsPoint, child: Text("返回一个点是否在一个多边形区域内")),
+            ],
+          ),
+        ));
   }
 
   void _onBMapViewCreated() {
@@ -96,7 +98,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void _startLocation() {
     try {
       var options =
-          LocationClientOption(coorType: CoorType.bd09ll, prodName: "Flutter Plugin Test");
+      LocationClientOption(coorType: CoorType.bd09ll, prodName: "Flutter Plugin Test");
       _bdLocationClient.startLocation(options);
     } on PlatformException catch (e) {
       print(e);
@@ -111,9 +113,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     }
   }
 
-  void _stopLocation() {
+  void _stopLocation() async {
     try {
-      _bdLocationClient.stopLocation();
+      if (await _bdLocationClient.isStart()) {
+        _bdLocationClient.stopLocation();
+      }
     } on PlatformException catch (e) {
       print(e);
     }
@@ -231,7 +235,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     }
     var extraInfo = const <String, dynamic>{'name': "Polyline", 'anything': "..."};
     var texturePolyline =
-        TexturePolylineOptions(latLngList, customTextureList, textureIndex, extraInfo: extraInfo);
+    TexturePolylineOptions(latLngList, customTextureList, textureIndex, extraInfo: extraInfo);
     _controller.addTexturePolyline(texturePolyline);
   }
 
@@ -250,7 +254,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     super.dispose();
     WidgetsBinding.instance.removeObserver(this);
     _stopLocation();
-    _bdLocationClient.dispose();
+    _subscription?.cancel();
     _controller.dispose();
   }
 
