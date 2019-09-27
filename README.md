@@ -259,26 +259,28 @@ class XxxState extends State<XxxWidget> with WidgetsBindingObserver{
 
 ```dart
   final _bdLocationClient = BDLocationClient();
+  StreamSubscription<BDLocation> _subscription;  
   //监听位置回调.
-  _bdLocationClient.onReceiveLocation.listen((location) {
+  _subscription = _bdLocationClient.onReceiveLocation.listen((location) {
     _controller.animateMapStatusNewLatLng(
         LatLng(latitude: location.latitude, longitude: location.longitude));
   });
 
   @override
   void dispose(){
-    _bdLocationClient.dispose();
+    _stopLocation();
+    _subscription?.cancel();
   }
 ```
 
 2.开启定位
 
 ```dart
-  void _startLocation() {
+  void _startLocation() async{
     try {
       var options =
           LocationClientOption(coorType: CoorType.bd09ll, prodName: "Flutter Plugin Test");
-      _bdLocationClient.startLocation(options);
+      await _bdLocationClient.startLocation(options);
     } on PlatformException catch (e) {
       print(e);
     }
@@ -288,9 +290,9 @@ class XxxState extends State<XxxWidget> with WidgetsBindingObserver{
 3.单次请求定位.
 
 ```dart
-  void _requestLocation() {
+  void _requestLocation() async {
     try {
-      _bdLocationClient.requestLocation();
+      await _bdLocationClient.requestLocation();
     } on PlatformException catch (e) {
       print(e);
     }
@@ -301,9 +303,11 @@ class XxxState extends State<XxxWidget> with WidgetsBindingObserver{
 
 ```dart
 
-  void _stopLocation() {
+  void _stopLocation() async{
     try {
-      _bdLocationClient.stopLocation();
+      if (await _locationClient.isStart()) {
+        await _locationClient.stopLocation();
+      }
     } on PlatformException catch (e) {
       print(e);
     }
