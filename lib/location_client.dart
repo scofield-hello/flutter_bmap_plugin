@@ -364,4 +364,9 @@ class BDLocationClient {
   Future<void> stopLocation() async {
     await _channel.invokeMethod("stopLocation");
   }
+
+  void dispose() {
+    _onReceiveLocation.close();
+    _instance = null;
+  }
 }

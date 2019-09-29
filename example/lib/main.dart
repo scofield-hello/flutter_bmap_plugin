@@ -15,6 +15,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   FlutterBMapViewController _controller;
   BDLocationClient _bdLocationClient;
+
   StreamSubscription<BDLocation> _subscription;
 
   @override
@@ -60,7 +61,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             children: <Widget>[
               Container(
                 height: 300,
-                child: FlutterBMapView(controller: _controller, onBMapViewCreated: _onBMapViewCreated),
+                child: FlutterBMapView(
+                    controller: _controller, onBMapViewCreated: _onBMapViewCreated),
               ),
               Row(children: <Widget>[
                 FlatButton(onPressed: _addMarkers, child: Text("添加标注点")),
@@ -95,7 +97,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     _controller.setMapViewResume();
   }
 
-  void _startLocation() {
+  void _startLocation() async {
     try {
       var options =
       LocationClientOption(coorType: CoorType.bd09ll, prodName: "Flutter Plugin Test");
@@ -105,7 +107,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     }
   }
 
-  void _requestLocation() {
+  void _requestLocation() async {
     try {
       _bdLocationClient.requestLocation();
     } on PlatformException catch (e) {
@@ -254,6 +256,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     super.dispose();
     WidgetsBinding.instance.removeObserver(this);
     _stopLocation();
+    //_bdLocationClient.dispose();
     _subscription?.cancel();
     _controller.dispose();
   }
