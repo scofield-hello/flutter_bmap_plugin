@@ -258,10 +258,9 @@ class XxxState extends State<XxxWidget> with WidgetsBindingObserver{
 1.初始化
 
 ```dart
-  final _bdLocationClient = BDLocationClient();
-  StreamSubscription<BDLocation> _subscription;  
+  final _locationClient = BDLocationClient();
   //监听位置回调.
-  _subscription = _bdLocationClient.onReceiveLocation.listen((location) {
+  _locationClient.onReceiveLocation.listen((location) {
     _controller.animateMapStatusNewLatLng(
         LatLng(latitude: location.latitude, longitude: location.longitude));
   });
@@ -269,7 +268,7 @@ class XxxState extends State<XxxWidget> with WidgetsBindingObserver{
   @override
   void dispose(){
     _stopLocation();
-    _subscription?.cancel();
+    _locationClient.dispose();
   }
 ```
 
@@ -280,7 +279,7 @@ class XxxState extends State<XxxWidget> with WidgetsBindingObserver{
     try {
       var options =
           LocationClientOption(coorType: CoorType.bd09ll, prodName: "Flutter Plugin Test");
-      await _bdLocationClient.startLocation(options);
+      await _locationClient.startLocation(options);
     } on PlatformException catch (e) {
       print(e);
     }
@@ -292,7 +291,7 @@ class XxxState extends State<XxxWidget> with WidgetsBindingObserver{
 ```dart
   void _requestLocation() async {
     try {
-      await _bdLocationClient.requestLocation();
+      await _locationClient.requestLocation();
     } on PlatformException catch (e) {
       print(e);
     }
@@ -318,7 +317,7 @@ class XxxState extends State<XxxWidget> with WidgetsBindingObserver{
 ```dart
  void _isStart() async{
     try {
-      bool start = await _bdLocationClient.isStart();
+      bool start = await _locationClient.isStart();
       print(start);
     } on PlatformException catch (e) {
       print(e);
