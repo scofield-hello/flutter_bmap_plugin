@@ -22,6 +22,7 @@ private const val METHOD_IS_START = "isStart"
 private const val METHOD_START_LOCATION = "startLocation"
 private const val METHOD_REQUEST_LOCATION = "requestLocation"
 private const val METHOD_STOP_LOCATION = "stopLocation"
+private const val EVENT_ON_RECEIVE_LOCATION = 0
 
 /**
  * 定位
@@ -90,7 +91,7 @@ class LocationHandler(activity: Activity) : MethodChannel.MethodCallHandler,
         locationOption.setIsNeedLocationDescribe(options["isNeedLocationDescribe"] as Boolean)
         locationOption.setIsNeedLocationPoiList(options["isNeedLocationPoiList"] as Boolean)
         locationOption.isLocationNotify = options["isLocationNotify"] as Boolean
-        var isOpenAutoNotifyMode = options["isOpenAutoNotifyMode"] as Boolean
+        val isOpenAutoNotifyMode = options["isOpenAutoNotifyMode"] as Boolean
         if (isOpenAutoNotifyMode) {
             locationOption.setOpenAutoNotifyMode(
                     options["autoNotifyMinTimeInterval"] as Int,
@@ -236,8 +237,10 @@ class LocationHandler(activity: Activity) : MethodChannel.MethodCallHandler,
                 serializedPoiList.add(mapOf("id" to it.id, "name" to it.name, "rank" to it.rank))
             }
             resultMap["poiList"] = serializedPoiList
-            //FlutterBMapPlugin.methodChannel.invokeMethod("onReceiveLocation", resultMap)
-            events?.success(resultMap)
+            events?.success(mapOf(
+                    "event" to EVENT_ON_RECEIVE_LOCATION,
+                    "data" to resultMap
+            ))
         }
     }
 

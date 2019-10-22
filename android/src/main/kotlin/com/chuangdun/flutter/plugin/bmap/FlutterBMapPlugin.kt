@@ -7,9 +7,10 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.PluginRegistry.Registrar
 
 const val BMAPVIEW_REGISTRY_NAME = "com.chuangdun.flutter/BMapApi.FlutterBMapView"
-const val LOCATION_CHANEL_NAME = "com.chuangdun.flutter/BMapApi.LocationClient"
-const val LOCATION_EVENT_CHANEL_NAME = "com.chuangdun.flutter/BMapApi.LocationChanged"
-const val COORDINATE_CHANEL_NAME = "com.chuangdun.flutter/BMapApi.Utils"
+const val BMAPVIEW_EVENT_CHANNEL = "com.chuangdun.flutter/BMapApi.FlutterBMapViewEvent"
+const val LOCATION_CHANNEL = "com.chuangdun.flutter/BMapApi.LocationClient"
+const val LOCATION_EVENT_CHANNEL = "com.chuangdun.flutter/BMapApi.LocationChanged"
+const val COORDINATE_CHANNEL = "com.chuangdun.flutter/BMapApi.Utils"
 
 class FlutterBMapPlugin {
     companion object {
@@ -21,12 +22,12 @@ class FlutterBMapPlugin {
             FlutterBMapPlugin.registrar = registrar
             SDKInitializer.initialize(registrar.activity().applicationContext)
             SDKInitializer.setCoordType(CoordType.BD09LL)
-            methodChannel = MethodChannel(registrar.messenger(), LOCATION_CHANEL_NAME)
+            methodChannel = MethodChannel(registrar.messenger(), LOCATION_CHANNEL)
             val locationHandler = LocationHandler(registrar.activity())
             methodChannel.setMethodCallHandler(locationHandler)
-            eventChannel = EventChannel(registrar.messenger(), LOCATION_EVENT_CHANEL_NAME)
+            eventChannel = EventChannel(registrar.messenger(), LOCATION_EVENT_CHANNEL)
             eventChannel.setStreamHandler(locationHandler)
-            val coordinateChannel = MethodChannel(registrar.messenger(), COORDINATE_CHANEL_NAME)
+            val coordinateChannel = MethodChannel(registrar.messenger(), COORDINATE_CHANNEL)
             coordinateChannel.setMethodCallHandler(BMapApiUtilsHandler)
             registrar.platformViewRegistry()
                     .registerViewFactory(BMAPVIEW_REGISTRY_NAME,

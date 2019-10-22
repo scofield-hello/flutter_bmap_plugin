@@ -324,6 +324,10 @@ class BDLocation {
   }
 }
 
+class LocEventType {
+  static const EVENT_ON_RECEIVE_LOCATION = 0;
+}
+
 class BDLocationClient {
   static BDLocationClient _instance;
 
@@ -332,9 +336,24 @@ class BDLocationClient {
 
   factory BDLocationClient() => _instance ??= BDLocationClient._();
 
-  BDLocationClient._();
+  void _onEvent(dynamic event) {
+    switch (event['event']) {
+      case LocEventType.EVENT_ON_RECEIVE_LOCATION:
+        var bdLocation = BDLocation.fromJson(event['data']);
+        _onReceiveLocation.add(bdLocation);
+        break;
+      default:
+        break;
+    }
+  }
 
-  Stream<dynamic> get onReceiveLocation => _eventChannel.receiveBroadcastStream();
+  BDLocationClient._() {
+    _eventChannel.receiveBroadcastStream().listen(_onEvent);
+  }
+
+  final _onReceiveLocation = StreamController<BDLocation>.broadcast();
+
+  Stream<BDLocation> get onReceiveLocation => _onReceiveLocation.stream;
 
   Future<bool> isStart() async {
     return _methodChannel.invokeMethod("isStart");
@@ -353,6 +372,7 @@ class BDLocationClient {
   }
 
   void dispose() {
+    _onReceiveLocation.close();
     _instance = null;
   }
 }

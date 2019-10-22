@@ -6,6 +6,14 @@ import 'package:flutter/services.dart';
 
 const LatLng POSITION_BEI_JING = LatLng(latitude: 39.914935, longitude: 116.403119);
 
+class EventType {
+  static const EVENT_ON_CLICK = 0;
+  static const EVENT_ON_POI_CLICK = 1;
+  static const EVENT_ON_LONG_CLICK = 2;
+  static const EVENT_ON_DOUBLE_CLICK = 3;
+  static const EVENT_ON_MARKER_CLICK = 4;
+}
+
 ///地图类型.
 class BMapType {
   const BMapType._(this.id);
@@ -362,7 +370,7 @@ class FlutterBMapView extends StatelessWidget {
 
   void _onPlatformViewCreated(int id) {
     if (controller != null) {
-      controller.onCreate(_viewType, id);
+      controller.onCreate(id);
     }
     if (onBMapViewCreated != null) {
       onBMapViewCreated();
@@ -371,7 +379,10 @@ class FlutterBMapView extends StatelessWidget {
 }
 
 class FlutterBMapViewController {
-  MethodChannel _channel;
+  static const _EVENT_CHANNEL_NAME = "com.chuangdun.flutter/BMapApi.FlutterBMapViewEvent";
+  static const _METHOD_CHANNEL_NAME = "com.chuangdun.flutter/BMapApi.FlutterBMapView";
+  MethodChannel _methodChannel;
+  EventChannel _eventChannel;
 
   ///地图点击事件.
   final _onMapClick = StreamController<LatLng>.broadcast();
@@ -398,48 +409,47 @@ class FlutterBMapViewController {
 
   Stream<Marker> get onMarkerClick => _onMarkerClick.stream;
 
-  Future<Null> _handleMessage(MethodCall call) async {
-    switch (call.method) {
-      case 'onMapClick':
-        var latLng = LatLng.fromJson(call.arguments);
+  void _onEvent(dynamic event) {
+    switch (event['event']) {
+      case EventType.EVENT_ON_CLICK:
+        var latLng = LatLng.fromJson(event['data']);
         _onMapClick.add(latLng);
         break;
-      case 'onMapPoiClick':
-        var mapPoi = MapPoi.fromJson(call.arguments);
+      case EventType.EVENT_ON_POI_CLICK:
+        var mapPoi = MapPoi.fromJson(event['data']);
         _onMapPoiClick.add(mapPoi);
         break;
-      case 'onMarkerClick':
-        var marker = Marker.fromJson(call.arguments);
-        _onMarkerClick.add(marker);
-        break;
-      case 'onMapLongClick':
-        var latLng = LatLng.fromJson(call.arguments);
+      case EventType.EVENT_ON_LONG_CLICK:
+        var latLng = LatLng.fromJson(event['data']);
         _onMapLongClick.add(latLng);
         break;
-      case 'onMapDoubleClick':
-        var latLng = LatLng.fromJson(call.arguments);
+      case EventType.EVENT_ON_DOUBLE_CLICK:
+        var latLng = LatLng.fromJson(event['data']);
         _onMapDoubleClick.add(latLng);
         break;
-      default:
+      case EventType.EVENT_ON_MARKER_CLICK:
+        var marker = Marker.fromJson(event['data']);
+        _onMarkerClick.add(marker);
         break;
     }
   }
 
-  onCreate(String chanelPrefix, int id) {
-    _channel = MethodChannel("${chanelPrefix}_$id");
-    _channel.setMethodCallHandler(_handleMessage);
+  onCreate(int id) {
+    _methodChannel = MethodChannel("${_METHOD_CHANNEL_NAME}_$id");
+    _eventChannel = EventChannel("${_EVENT_CHANNEL_NAME}_$id");
+    _eventChannel.receiveBroadcastStream().listen(_onEvent);
   }
 
   Future<void> setMapViewResume() {
-    return _channel.invokeMethod("setMapViewResume");
+    return _methodChannel.invokeMethod("setMapViewResume");
   }
 
   Future<void> setMapViewPause() {
-    return _channel.invokeMethod("setMapViewPause");
+    return _methodChannel.invokeMethod("setMapViewPause");
   }
 
   Future<void> setMapViewDestroy() {
-    return _channel.invokeMethod("setMapViewDestroy");
+    return _methodChannel.invokeMethod("setMapViewDestroy");
   }
 
   ///绘制标注点.
@@ -450,7 +460,7 @@ class FlutterBMapViewController {
     for (var options in markers) {
       params.add(options.asJson());
     }
-    return _channel.invokeMethod("addMarkers", params);
+    return _methodChannel.invokeMethod("addMarkers", params);
   }
 
   ///绘制文本信息.
@@ -461,31 +471,31 @@ class FlutterBMapViewController {
     for (var options in texts) {
       params.add(options.asJson());
     }
-    return _channel.invokeMethod("addTexts", params);
+    return _methodChannel.invokeMethod("addTexts", params);
   }
 
   ///绘制自定义折线.
   ///[texturePolyline] 折线信息.
   Future<void> addTexturePolyline(TexturePolylineOptions texturePolyline) {
-    return _channel.invokeMethod("addTexturePolyline", texturePolyline.asJson());
+    return _methodChannel.invokeMethod("addTexturePolyline", texturePolyline.asJson());
   }
 
   ///隐藏InfoWindow.
   Future<void> hideInfoWindow() {
-    return _channel.invokeMethod("hideInfoWindow");
+    return _methodChannel.invokeMethod("hideInfoWindow");
   }
 
   ///显示InfoWindow.
   ///[infoWindow] 信息窗对象.
   Future<void> showInfoWindow(InfoWindow infoWindow) {
-    return _channel.invokeMethod("showInfoWindow", infoWindow.asJson());
+    return _methodChannel.invokeMethod("showInfoWindow", infoWindow.asJson());
   }
 
   ///移动地图中心至指定经纬度.
   ///[latLng] 经纬度对象.
   ///[zoom] 地图缩放级别.
   Future<void> animateMapStatusNewLatLng(LatLng latLng, {double zoom}) {
-    return _channel
+    return _methodChannel
         .invokeMethod("animateMapStatusNewLatLng", {'center': latLng.asJson(), 'zoom': zoom});
   }
 
@@ -496,7 +506,7 @@ class FlutterBMapViewController {
     for (var options in bounds) {
       latLngList.add(options.asJson());
     }
-    return _channel.invokeMethod(
+    return _methodChannel.invokeMethod(
         "animateMapStatusNewBounds", {'bounds': latLngList, 'width': width, 'height': height});
   }
 
@@ -508,7 +518,7 @@ class FlutterBMapViewController {
     for (var options in bounds) {
       latLngList.add(options.asJson());
     }
-    return _channel.invokeMethod("animateMapStatusNewBoundsPadding", {
+    return _methodChannel.invokeMethod("animateMapStatusNewBoundsPadding", {
       'bounds': latLngList,
       'paddingLeft': paddingLeft,
       'paddingTop': paddingTop,
@@ -525,7 +535,7 @@ class FlutterBMapViewController {
     for (var options in bounds) {
       latLngList.add(options.asJson());
     }
-    return _channel.invokeMethod("animateMapStatusNewBoundsZoom", {
+    return _methodChannel.invokeMethod("animateMapStatusNewBoundsZoom", {
       'bounds': latLngList,
       'paddingLeft': paddingLeft,
       'paddingTop': paddingTop,
@@ -536,7 +546,7 @@ class FlutterBMapViewController {
 
   ///清除地图图层.
   Future<void> clearMap() {
-    return _channel.invokeMethod("clearMap");
+    return _methodChannel.invokeMethod("clearMap");
   }
 
   void dispose() {

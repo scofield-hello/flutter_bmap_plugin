@@ -10,6 +10,7 @@ import com.baidu.mapapi.map.MapView
 import com.baidu.mapapi.model.LatLng
 import com.chuangdun.flutter.plugin.bmap.*
 import io.flutter.plugin.common.BinaryMessenger
+import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.platform.PlatformView
@@ -25,22 +26,26 @@ private const val METHOD_SHOW_INFO_WINDOW = "showInfoWindow"
 private const val METHOD_HIDE_INFO_WINDOW = "hideInfoWindow"
 private const val METHOD_ANIMATE_MAP_STATUS_LATLNG = "animateMapStatusNewLatLng"
 private const val METHOD_ANIMATE_MAP_STATUS_BOUNDS = "animateMapStatusNewBounds"
-private const val METHOD_ANIMATE_MAP_STAUTS_BOUNDS_PADDING = "animateMapStatusNewBoundsPadding"
+private const val METHOD_ANIMATE_MAP_STATUS_BOUNDS_PADDING = "animateMapStatusNewBoundsPadding"
 private const val METHOD_ANIMATE_MAP_STATUS_BOUNDS_ZOOM = "animateMapStatusNewBoundsZoom"
 private const val METHOD_CLEAR_MAP = "clearMap"
-private const val CALLBACK_ON_MAP_CLICK = "onMapClick"
-private const val CALLBACK_ON_MARKER_CLICK = "onMarkerClick"
-private const val CALLBACK_ON_MAP_POI_CLICK = "onMapPoiClick"
-private const val CALLBACK_ON_MAP_LONG_CLICK = "onMapLongClick"
-private const val CALLBACK_ON_MAP_DOUBLE_CLICK = "onMapDoubleClick"
-class FlutterBMapView(activity: Activity, messenger: BinaryMessenger, id:Int,
-                      createParams: Map<String,*>?): PlatformView,MethodChannel.MethodCallHandler{
+private const val EVENT_ON_CLICK = 0
+private const val EVENT_ON_POI_CLICK = 1
+private const val EVENT_ON_LONG_CLICK = 2
+private const val EVENT_ON_DOUBLE_CLICK = 3
+private const val EVENT_ON_MARKER_CLICK = 4
+
+
+class FlutterBMapView(activity: Activity, messenger: BinaryMessenger, id: Int,
+                      createParams: Map<String, *>?) : PlatformView, MethodChannel.MethodCallHandler, EventChannel.StreamHandler {
     private val tag = this.javaClass.simpleName
 
     private val activityRef: WeakReference<Activity> = WeakReference(activity)
     private val mapView: MapView
     private val baiduMap: BaiduMap
     private var methodChannel: MethodChannel
+    private var eventChannel: EventChannel
+    private var eventSink: EventChannel.EventSink? = null
 
     init {
         Log.i(tag, "FlutterBMapView init.")
@@ -51,36 +56,60 @@ class FlutterBMapView(activity: Activity, messenger: BinaryMessenger, id:Int,
         baiduMap = mapView.map
         methodChannel = MethodChannel(messenger, "${BMAPVIEW_REGISTRY_NAME}_$id")
         methodChannel.setMethodCallHandler(this)
+        eventChannel = EventChannel(messenger, "${BMAPVIEW_EVENT_CHANNEL}_$id")
+        eventChannel.setStreamHandler(this)
         setUpMapListeners()
+    }
+
+    override fun onCancel(p0: Any?) {
+        this.eventSink = null
+    }
+
+    override fun onListen(p0: Any?, eventSink: EventChannel.EventSink) {
+        this.eventSink = eventSink
     }
 
     private fun setUpMapListeners() {
         baiduMap.setOnMapDoubleClickListener { latLng ->
-            methodChannel.invokeMethod(CALLBACK_ON_MAP_DOUBLE_CLICK, serializeLatLng(latLng))
+            eventSink?.success(mapOf(
+                    "event" to EVENT_ON_DOUBLE_CLICK,
+                    "data" to serializeLatLng(latLng)
+            ))
         }
         baiduMap.setOnMapLongClickListener { latLng ->
-            methodChannel.invokeMethod(CALLBACK_ON_MAP_LONG_CLICK, serializeLatLng(latLng))
+            eventSink?.success(mapOf(
+                    "event" to EVENT_ON_LONG_CLICK,
+                    "data" to serializeLatLng(latLng)
+            ))
         }
         baiduMap.setOnMarkerClickListener { marker ->
-            methodChannel.invokeMethod(CALLBACK_ON_MARKER_CLICK, serializeMarker(marker))
+            eventSink?.success(mapOf(
+                    "event" to EVENT_ON_MARKER_CLICK,
+                    "data" to serializeMarker(marker)
+            ))
             true
         }
         baiduMap.setOnMapClickListener(object : OnMapClickListener {
             override fun onMapClick(position: LatLng?) {
                 position?.let {
-                    methodChannel.invokeMethod(CALLBACK_ON_MAP_CLICK, serializeLatLng(it))
+                    eventSink?.success(mapOf(
+                            "event" to EVENT_ON_CLICK,
+                            "data" to serializeLatLng(it)
+                    ))
                 }
             }
 
             override fun onMapPoiClick(poi: MapPoi?): Boolean {
                 poi?.let {
-                    methodChannel.invokeMethod(CALLBACK_ON_MAP_POI_CLICK, serializeMapPoi(it))
+                    eventSink?.success(mapOf(
+                            "event" to EVENT_ON_POI_CLICK,
+                            "data" to serializeMapPoi(it)
+                    ))
                 }
                 return true
             }
         })
     }
-
 
 
     override fun getView(): View {
@@ -143,7 +172,7 @@ class FlutterBMapView(activity: Activity, messenger: BinaryMessenger, id:Int,
             val mapStatusUpdate = parseMapStatusUpdateNewBounds(mapStatusParams)
             baiduMap.animateMapStatus(mapStatusUpdate)
         }
-        METHOD_ANIMATE_MAP_STAUTS_BOUNDS_PADDING -> {
+        METHOD_ANIMATE_MAP_STATUS_BOUNDS_PADDING -> {
             val mapStatusParams = call.arguments<Map<String, Any?>>()
             val mapStatusUpdate = parseMapStatusUpdateNewBoundsPadding(mapStatusParams)
             baiduMap.animateMapStatus(mapStatusUpdate)
