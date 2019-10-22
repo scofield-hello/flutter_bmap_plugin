@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 
 const LatLng POSITION_BEI_JING = LatLng(latitude: 39.914935, longitude: 116.403119);
 
-class EventType {
+class MapEventType {
   static const EVENT_ON_CLICK = 0;
   static const EVENT_ON_POI_CLICK = 1;
   static const EVENT_ON_LONG_CLICK = 2;
@@ -411,25 +411,27 @@ class FlutterBMapViewController {
 
   void _onEvent(dynamic event) {
     switch (event['event']) {
-      case EventType.EVENT_ON_CLICK:
+      case MapEventType.EVENT_ON_CLICK:
         var latLng = LatLng.fromJson(event['data']);
         _onMapClick.add(latLng);
         break;
-      case EventType.EVENT_ON_POI_CLICK:
+      case MapEventType.EVENT_ON_POI_CLICK:
         var mapPoi = MapPoi.fromJson(event['data']);
         _onMapPoiClick.add(mapPoi);
         break;
-      case EventType.EVENT_ON_LONG_CLICK:
+      case MapEventType.EVENT_ON_LONG_CLICK:
         var latLng = LatLng.fromJson(event['data']);
         _onMapLongClick.add(latLng);
         break;
-      case EventType.EVENT_ON_DOUBLE_CLICK:
+      case MapEventType.EVENT_ON_DOUBLE_CLICK:
         var latLng = LatLng.fromJson(event['data']);
         _onMapDoubleClick.add(latLng);
         break;
-      case EventType.EVENT_ON_MARKER_CLICK:
+      case MapEventType.EVENT_ON_MARKER_CLICK:
         var marker = Marker.fromJson(event['data']);
         _onMarkerClick.add(marker);
+        break;
+      default:
         break;
     }
   }
