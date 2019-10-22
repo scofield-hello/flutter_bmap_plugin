@@ -327,46 +327,32 @@ class BDLocation {
 class BDLocationClient {
   static BDLocationClient _instance;
 
-  final _channel = const MethodChannel("com.chuangdun.flutter/BMapApi.LocationClient");
-  final _onReceiveLocation = StreamController<BDLocation>.broadcast();
+  static const _methodChannel = const MethodChannel("com.chuangdun.flutter/BMapApi.LocationClient");
+  static const _eventChannel = const EventChannel("com.chuangdun.flutter/BMapApi.LocationChanged");
 
   factory BDLocationClient() => _instance ??= BDLocationClient._();
 
-  BDLocationClient._() {
-    _channel.setMethodCallHandler(_handleMessage);
-  }
+  BDLocationClient._();
 
-  Stream<BDLocation> get onReceiveLocation => _onReceiveLocation.stream;
-
-  Future<Null> _handleMessage(MethodCall call) async {
-    switch (call.method) {
-      case 'onReceiveLocation':
-        var bdLocation = BDLocation.fromJson(call.arguments);
-        _onReceiveLocation.add(bdLocation);
-        break;
-      default:
-        break;
-    }
-  }
+  Stream<dynamic> get onReceiveLocation => _eventChannel.receiveBroadcastStream();
 
   Future<bool> isStart() async {
-    return _channel.invokeMethod("isStart");
+    return _methodChannel.invokeMethod("isStart");
   }
 
   Future<void> startLocation(LocationClientOption options) async {
-    await _channel.invokeMethod("startLocation", options.asJson());
+    await _methodChannel.invokeMethod("startLocation", options.asJson());
   }
 
   Future<void> requestLocation() async {
-    await _channel.invokeMethod("requestLocation");
+    await _methodChannel.invokeMethod("requestLocation");
   }
 
   Future<void> stopLocation() async {
-    await _channel.invokeMethod("stopLocation");
+    await _methodChannel.invokeMethod("stopLocation");
   }
 
   void dispose() {
-    _onReceiveLocation.close();
     _instance = null;
   }
 }

@@ -11,6 +11,7 @@ import com.baidu.location.BDAbstractLocationListener
 import com.baidu.location.BDLocation
 import com.baidu.location.LocationClient
 import com.baidu.location.LocationClientOption
+import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.PluginRegistry
@@ -26,6 +27,7 @@ private const val METHOD_STOP_LOCATION = "stopLocation"
  * 定位
  */
 class LocationHandler(activity: Activity) : MethodChannel.MethodCallHandler,
+        EventChannel.StreamHandler,
         PluginRegistry.RequestPermissionsResultListener {
     private val tag = this.javaClass.simpleName
     private val activityRef = WeakReference<Activity>(activity)
@@ -37,8 +39,8 @@ class LocationHandler(activity: Activity) : MethodChannel.MethodCallHandler,
             Manifest.permission.WRITE_EXTERNAL_STORAGE)
 
     private val locationClient = LocationClient(activity.applicationContext)
+    private var events: EventChannel.EventSink? = null
     private lateinit var listener: BDAbstractLocationListener
-
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         if (!checkPermissions()) {
             requestPermissions()
@@ -234,7 +236,16 @@ class LocationHandler(activity: Activity) : MethodChannel.MethodCallHandler,
                 serializedPoiList.add(mapOf("id" to it.id, "name" to it.name, "rank" to it.rank))
             }
             resultMap["poiList"] = serializedPoiList
-            FlutterBMapPlugin.methodChannel.invokeMethod("onReceiveLocation", resultMap)
+            //FlutterBMapPlugin.methodChannel.invokeMethod("onReceiveLocation", resultMap)
+            events?.success(resultMap)
         }
+    }
+
+    override fun onCancel(obj: Any?) {
+        this.events = null
+    }
+
+    override fun onListen(obj: Any?, events: EventChannel.EventSink) {
+        this.events = events
     }
 }
