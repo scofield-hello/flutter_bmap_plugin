@@ -5,8 +5,6 @@
 #import <Foundation/Foundation.h>
 #import "MethodHandler.h"
 #import <BaiduMapAPI_Map/BMKMapView.h>
-#import <BaiduMapAPI_Map/BMKPointAnnotation.h>
-#import <BaiduMapAPI_Map//BMKPinAnnotationView.h>
 @interface MapInit : NSObject<MapEventsHandler>
 @end
 
@@ -20,14 +18,14 @@
 @end
 
 #pragma mark - 标注点
-@interface AddMarkers : NSObject <MapMethodHandler>
+@interface AddMarkers : NSObject <MapMethodHandler, BMKMapViewDelegate>
 @end
 
 @interface AddTexts : NSObject <MapMethodHandler>
 @end
 
 #pragma mark - 轨迹
-@interface AddTexturePolyline : NSObject <MapMethodHandler>
+@interface AddTexturePolyline : NSObject <MapMethodHandler, BMKMapViewDelegate>
 @end
 
 @interface HideInfoWindow : NSObject <MapMethodHandler>

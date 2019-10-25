@@ -54,37 +54,40 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       appBar: AppBar(
         title: const Text('FlutterBMapView'),
       ),
-      body: Column(
-        children: <Widget>[
-          Container(
-            height: 300,
-            child: FlutterBMapView(controller: _controller, onBMapViewCreated: _onBMapViewCreated),
-          ),
-          Row(children: <Widget>[
-            FlatButton(onPressed: _addMarkers, child: Text("添加标注点")),
-            FlatButton(onPressed: _addTextOptionsList, child: Text("添加文本信息")),
-          ]),
-          Row(children: <Widget>[
-            FlatButton(onPressed: _addPolylineOptions, child: Text("画折线")),
-            FlatButton(onPressed: () => _controller.clearMap(), child: Text("清除图层")),
-          ]),
-          Row(children: <Widget>[
-            FlatButton(onPressed: _startLocation, child: Text("开始定位")),
-            FlatButton(onPressed: _requestLocation, child: Text("单次定位")),
-            FlatButton(onPressed: _stopLocation, child: Text("停止定位")),
-          ]),
-          Row(children: <Widget>[
-            FlatButton(onPressed: _convert, child: Text("转换坐标")),
-            FlatButton(onPressed: _convertList, child: Text("转换坐标列表")),
-          ]),
-          Row(children: <Widget>[
-            FlatButton(onPressed: _getDistance, child: Text("计算距离")),
-            FlatButton(onPressed: _calculateArea, child: Text("计算面积")),
-          ]),
-          FlatButton(onPressed: _getNearestPointFromLine, child: Text("返回某点距线上最近的点")),
-          FlatButton(onPressed: _isCircleContainsPoint, child: Text("判断圆形是否包含传入的经纬度点")),
-          FlatButton(onPressed: _isPolygonContainsPoint, child: Text("返回一个点是否在一个多边形区域内")),
-        ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            Container(
+              height: 300,
+              child:
+                  FlutterBMapView(controller: _controller, onBMapViewCreated: _onBMapViewCreated),
+            ),
+            Row(children: <Widget>[
+              FlatButton(onPressed: _addMarkers, child: Text("添加标注点")),
+              FlatButton(onPressed: _addTextOptionsList, child: Text("添加文本信息")),
+            ]),
+            Row(children: <Widget>[
+              FlatButton(onPressed: _addPolylineOptions, child: Text("画折线")),
+              FlatButton(onPressed: () => _controller.clearMap(), child: Text("清除图层")),
+            ]),
+            Row(children: <Widget>[
+              FlatButton(onPressed: _startLocation, child: Text("开始定位")),
+              FlatButton(onPressed: _requestLocation, child: Text("单次定位")),
+              FlatButton(onPressed: _stopLocation, child: Text("停止定位")),
+            ]),
+            Row(children: <Widget>[
+              FlatButton(onPressed: _convert, child: Text("转换坐标")),
+              FlatButton(onPressed: _convertList, child: Text("转换坐标列表")),
+            ]),
+            Row(children: <Widget>[
+              FlatButton(onPressed: _getDistance, child: Text("计算距离")),
+              FlatButton(onPressed: _calculateArea, child: Text("计算面积")),
+            ]),
+            FlatButton(onPressed: _getNearestPointFromLine, child: Text("返回某点距线上最近的点")),
+            FlatButton(onPressed: _isCircleContainsPoint, child: Text("判断圆形是否包含传入的经纬度点")),
+            FlatButton(onPressed: _isPolygonContainsPoint, child: Text("返回一个点是否在一个多边形区域内")),
+          ],
+        ),
       ),
     ));
   }

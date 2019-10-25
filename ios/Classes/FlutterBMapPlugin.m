@@ -15,30 +15,25 @@
 #define COORDINATE_CHANEL_NAME @"com.chuangdun.flutter/BMapApi.Utils"
 
 static NSObject <FlutterPluginRegistrar> *_registrar;
-static FlutterMethodChannel *_methodChannel;
-
-static FlutterEventChannel *_locEventChannel;
-static FlutterEventSink _eventSink;
-static id _arguments;
 
 @interface FlutterBMapPlugin ()<FlutterStreamHandler, BMKLocationAuthDelegate>
 @end
 @implementation FlutterBMapPlugin
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
+    
+    //百度地图key
     BMKMapManager *mapManager = [[BMKMapManager alloc] init];
-    BOOL ret = [mapManager start:@"2pE6g2BOaObmjiNh2QUGfFBgQE8zSB2V"  generalDelegate:nil];
+    BOOL ret = [mapManager start:@"RLh4xVHfdGGIHrLtiNXT4RgduBa1RU4L"  generalDelegate:nil];
     if (!ret) {
         NSLog(@"manager start failed!");
     }
-    [[BMKLocationAuth sharedInstance] checkPermisionWithKey:@"2pE6g2BOaObmjiNh2QUGfFBgQE8zSB2V" authDelegate:self];
+    
+    //定位key
+    [[BMKLocationAuth sharedInstance] checkPermisionWithKey:@"RLh4xVHfdGGIHrLtiNXT4RgduBa1RU4L" authDelegate:self];
+    
     _registrar = registrar;
-//  FlutterMethodChannel* bMapViewChannel = [FlutterMethodChannel
-//      methodChannelWithName:BMAPVIEW_REGISTRY_NAME
-//            binaryMessenger:[registrar messenger]];
-//    [bMapViewChannel setMethodCallHandler:^(FlutterMethodCall * _Nonnull call, FlutterResult  _Nonnull result) {
-//
-//    }];
-   
+
+    
     FlutterMethodChannel* locationChannel = [FlutterMethodChannel
     methodChannelWithName:LOCATION_CHANEL_NAME
           binaryMessenger:[registrar messenger]];
@@ -52,7 +47,6 @@ static id _arguments;
             result(FlutterMethodNotImplemented);
         }
     }];
-    _methodChannel = locationChannel;
     FlutterEventChannel *locEventChannel = [FlutterEventChannel eventChannelWithName:@"com.chuangdun.flutter/BMapApi.LocationChanged"
                                                              binaryMessenger:[registrar messenger]];
     NSObject<FlutterStreamHandler> * Streamhandler = [LocationFunctionRegistry locationEventsHandler][@"init"];
@@ -62,7 +56,13 @@ static id _arguments;
     methodChannelWithName:COORDINATE_CHANEL_NAME
           binaryMessenger:[registrar messenger]];
     [utilsChannel setMethodCallHandler:^(FlutterMethodCall * _Nonnull call, FlutterResult  _Nonnull result) {
-        
+        NSObject <UtilsMethodHandler> *handler = [UtilsFunctionRegistry utilsMethodHandler][call.method];
+               if (handler) {
+                   [[handler init] onMethodCall:call :result];
+                  
+               } else {
+                   result(FlutterMethodNotImplemented);
+               }
     }];
     
     //生成注册类
@@ -75,21 +75,6 @@ static id _arguments;
     return _registrar;
 }
 
-+ (FlutterMethodChannel *)methodChannel
-{
-    return _methodChannel;
-}
 
-+ (FlutterEventChannel *)locEventChannel
-{
-    return _locEventChannel;
-}
-+ (FlutterEventSink)eventSink
-{
-    return _eventSink;
-}
-+ (id)arguments
-{
-    return _arguments;
-}
+
 @end

@@ -72,6 +72,7 @@ static NSString *MAP_MARKER_CLICKE_CHANNEL_NAME = @"com.chuangdun.flutter/BMapAp
     {
         NSLog(@"--------args---------%@", args);
         _mapView = [[BMKMapView alloc] initWithFrame:frame];
+        _mapView.delegate = self;
         _viewId = viewId;
         [self setMapUp];
         
@@ -101,7 +102,6 @@ static NSString *MAP_MARKER_CLICKE_CHANNEL_NAME = @"com.chuangdun.flutter/BMapAp
          result(FlutterMethodNotImplemented);
        }
      }];
-     _mapView.delegate = weakSelf;
     NSLog(@"%@", [NSString stringWithFormat:@"%@_%lld", MAP_MARKER_CLICKE_CHANNEL_NAME, _viewId]);
      _eventHandler = [[MapInit alloc] init];
      _markerClickedEventChannel = [FlutterEventChannel eventChannelWithName:[NSString stringWithFormat:@"%@_%lld", MAP_MARKER_CLICKE_CHANNEL_NAME, _viewId]

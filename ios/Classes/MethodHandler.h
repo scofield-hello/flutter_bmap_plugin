@@ -39,4 +39,10 @@ NS_ASSUME_NONNULL_BEGIN
 - (FlutterError *_Nullable)onCancelWithArguments:(id _Nullable)arguments;
 @end
 
+//region 工具
+@protocol UtilsMethodHandler <NSObject>
+@required
+- (void)onMethodCall:(FlutterMethodCall *)call :(FlutterResult)result;
+@end
+
 NS_ASSUME_NONNULL_END

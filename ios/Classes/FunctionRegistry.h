@@ -22,5 +22,9 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSDictionary<NSString *, NSObject <LocationEventsHandler> *> *)locationEventsHandler;
 @end
 
+@protocol UtilsMethodHandler;
+@interface UtilsFunctionRegistry : NSObject
++ (NSDictionary<NSString *, NSObject <UtilsMethodHandler> *> *)utilsMethodHandler;
+@end
 
 NS_ASSUME_NONNULL_END

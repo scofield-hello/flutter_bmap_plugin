@@ -9,6 +9,7 @@
 #import "MethodHandler.h"
 #import "LocationHandlers.h"
 #import "MapHandlers.h"
+#import "UtilsHandlers.h"
 
 static NSDictionary<NSString *, NSObject <MapMethodHandler> *> *_mapDictionary;
 static NSDictionary<NSString *, NSObject <MapEventsHandler> *> *_mapEventDictionary;
@@ -70,4 +71,26 @@ static NSDictionary<NSString *, NSObject <LocationEventsHandler> *> *_locationEv
     }
     return _locationEventDictionary;
 }
+
+
+@end
+static NSDictionary<NSString *, NSObject <UtilsMethodHandler> *> *_utilsDictionary;
+@implementation UtilsFunctionRegistry {
+
+}
++ (NSDictionary<NSString *, NSObject <UtilsMethodHandler> *> *)utilsMethodHandler {
+    if (!_utilsDictionary) {
+        _utilsDictionary = @{
+                @"convert": [Convert alloc],
+                @"getDistance": [GetDistance alloc],
+                @"northeast": [Northeast alloc],
+                @"convertList": [ConvertList alloc],
+                @"getNearestPointFromLine": [GetNearestPointFromLine alloc],
+                @"isPolygonContainsPoint": [IsPolygonContainsPoint alloc],
+                @"isCircleContainsPoint": [IsCircleContainsPoint alloc],
+        };
+    }
+    return _utilsDictionary;
+}
+
 @end
