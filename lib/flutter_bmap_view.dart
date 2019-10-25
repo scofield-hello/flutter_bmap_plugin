@@ -368,7 +368,7 @@ class FlutterBMapView extends StatelessWidget {
             creationParams: bMapViewOptions.asJson(),
             creationParamsCodec: const StandardMessageCodec(),
             onPlatformViewCreated: _onPlatformViewCreated)
-        : UiKitView(
+        : AndroidView(
             viewType: _viewType,
             creationParams: bMapViewOptions.asJson(),
             creationParamsCodec: const StandardMessageCodec(),
