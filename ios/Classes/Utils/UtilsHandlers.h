@@ -7,7 +7,7 @@
 
 #import <Foundation/Foundation.h>
 #import "MethodHandler.h"
-#import "BMKLocationComponent.h"
+#import <BMKLocationkit/BMKLocationComponent.h>
 NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark -将指定类型坐标转换成百度坐标

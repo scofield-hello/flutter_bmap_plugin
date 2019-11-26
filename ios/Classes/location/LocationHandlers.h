@@ -4,7 +4,7 @@
 
 #import <Foundation/Foundation.h>
 #import "MethodHandler.h"
-#import "BMKLocationComponent.h"
+#import <BMKLocationkit/BMKLocationComponent.h>
 
 @class BMKLocationManager;
 #pragma mark - 初始化

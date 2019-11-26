@@ -15,10 +15,9 @@ A new flutter plugin project.
   s.source_files = 'Classes/**/*'
   s.public_header_files = 'Classes/**/*.h'
   s.dependency 'Flutter'
-  s.ios.vendored_frameworks =  'Frameworks/BaiduMapAPI_Base.framework','Frameworks/BaiduMapAPI_Cloud.framework','Frameworks/BaiduMapAPI_Map.framework','Frameworks/BaiduMapAPI_Search.framework','Frameworks/BaiduMapAPI_Utils.framework'
-  s.vendored_frameworks =  'BaiduMapAPI_Base.framework','BaiduMapAPI_Cloud.framework','BaiduMapAPI_Map.framework','BaiduMapAPI_Search.framework','BaiduMapAPI_Utils.framework'
+  s.ios.vendored_frameworks =  'Frameworks/BaiduMapAPI_Base.framework','Frameworks/BaiduMapAPI_Cloud.framework','Frameworks/BaiduMapAPI_Map.framework','Frameworks/BaiduMapAPI_Search.framework','Frameworks/BaiduMapAPI_Utils.framework','Frameworks/BMKLocationkit.framework'
+  s.vendored_frameworks =  'BaiduMapAPI_Base.framework','BaiduMapAPI_Cloud.framework','BaiduMapAPI_Map.framework','BaiduMapAPI_Search.framework','BaiduMapAPI_Utils.framework','BMKLocationkit.framework'
   s.vendored_libraries = 'Libraries/libssl.a','Libraries/libcrypto.a'
-  s.frameworks = 'CoreGraphics','CoreLocation'
   s.resources = 'Resources/mapapi.bundle','Resources/Icon_end.png','Resources/Icon_road_blue_arrow.png','Resources/Icon_road_green_arrow.png','Resources/Icon_road_red_arrow.png','Resources/Icon_road_yellow_arrow.png','Resources/Icon_start.png','Resources/marker.png','Resources/nav_arrow.png'
   s.ios.deployment_target = '8.0'
 end

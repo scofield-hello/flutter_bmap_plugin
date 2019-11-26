@@ -3,7 +3,7 @@
 //
 
 #import "LocationHandlers.h"
-#import "BMKLocationComponent.h"
+#import <BMKLocationkit/BMKLocationComponent.h>
 #import "FlutterBMapPlugin.h"
 #import "LocationModels.h"
 #import "MJExtension.h"

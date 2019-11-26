@@ -10,26 +10,30 @@
 #import "FunctionRegistry.h"
 #import "MethodHandler.h"
 #import "BMapViewFactory.h"
+#import <BaiduMapAPI_Base/BMKBaseComponent.h>
+#import <BMKLocationKit/BMKLocationComponent.h>
 #define BMAPVIEW_REGISTRY_NAME  @"com.chuangdun.flutter/BMapApi.FlutterBMapView"
 #define LOCATION_CHANEL_NAME @"com.chuangdun.flutter/BMapApi.LocationClient"
 #define COORDINATE_CHANEL_NAME @"com.chuangdun.flutter/BMapApi.Utils"
 
 static NSObject <FlutterPluginRegistrar> *_registrar;
 
-@interface FlutterBMapPlugin ()<FlutterStreamHandler, BMKLocationAuthDelegate>
+@interface FlutterBMapPlugin ()<BMKLocationAuthDelegate>
 @end
 @implementation FlutterBMapPlugin
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
     
     //百度地图key
     BMKMapManager *mapManager = [[BMKMapManager alloc] init];
-    BOOL ret = [mapManager start:@"RLh4xVHfdGGIHrLtiNXT4RgduBa1RU4L"  generalDelegate:nil];
+    BOOL ret = [mapManager start:@"jCMNGMFPf795bxXwhNYaeTbcgfAQOzqd"  generalDelegate:nil];
     if (!ret) {
         NSLog(@"manager start failed!");
+    }else{
+      NSLog(@"manager start 成功!");
     }
     
     //定位key
-    [[BMKLocationAuth sharedInstance] checkPermisionWithKey:@"RLh4xVHfdGGIHrLtiNXT4RgduBa1RU4L" authDelegate:self];
+    [[BMKLocationAuth sharedInstance] checkPermisionWithKey:@"jCMNGMFPf795bxXwhNYaeTbcgfAQOzqd" authDelegate:self];
     
     _registrar = registrar;
 

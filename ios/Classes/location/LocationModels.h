@@ -3,64 +3,64 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "BMKLocationComponent.h"
+#import <BMKLocationkit/BMKLocationComponent.h>
 
 
 @class Address;
 //@class BM
 @interface BDLocation : NSObject
 - (instancetype)initWithLocation:(BMKLocation *)location withError:(NSError *)error;
-//@property(nonatomic) NSString *time;
-//@property(nonatomic) NSString *country;
-//@property(nonatomic) NSString *countryCode;
-//@property(nonatomic) NSString *province;
-//@property(nonatomic) double radius;
-//@property(nonatomic) NSString *city;
-//@property(nonatomic) NSString *cityCode;
-//@property(nonatomic) NSString *adCode;
+@property(nonatomic) NSString *time;
+@property(nonatomic) NSString *country;
+@property(nonatomic) NSString *countryCode;
+@property(nonatomic) NSString *province;
+@property(nonatomic) double radius;
+@property(nonatomic) NSString *city;
+@property(nonatomic) NSString *cityCode;
+@property(nonatomic) NSString *adCode;
 @property(nonatomic) NSString *addrStr;
-//@property(nonatomic) Address *address;
-//@property(nonatomic) double altitude;
+@property(nonatomic) Address *address;
+@property(nonatomic) double altitude;
 @property(nonatomic) double latitude;
 @property(nonatomic) double longitude;
-//@property(nonatomic) double direction;
-//@property(nonatomic) NSString *district;
-//@property(nonatomic) int delayTime;
-//@property(nonatomic) NSString *floor;
-//@property(nonatomic) int gpsAccuracyStatus;
-//@property(nonatomic) int gpsCheckStatus;
-//@property(nonatomic) int indoorLocationSource;
-//@property(nonatomic) int indoorLocationSurpport;
-//@property(nonatomic) NSString *indoorLocationSurpportBuidlingID;
-//@property(nonatomic) NSString *indoorLocationSurpportBuidlingName;
-//@property(nonatomic) int indoorNetworkState;
-//@property(nonatomic) NSString *buildingID;
-//@property(nonatomic) NSString *buildingName;
-//@property(nonatomic) NSString *indoorSurpportPolygon;
-//@property(nonatomic) BOOL isCellChangeFlag;
+@property(nonatomic) double direction;
+@property(nonatomic) NSString *district;
+@property(nonatomic) int delayTime;
+@property(nonatomic) NSString *floor;
+@property(nonatomic) int gpsAccuracyStatus;
+@property(nonatomic) int gpsCheckStatus;
+@property(nonatomic) int indoorLocationSource;
+@property(nonatomic) int indoorLocationSurpport;
+@property(nonatomic) NSString *indoorLocationSurpportBuidlingID;
+@property(nonatomic) NSString *indoorLocationSurpportBuidlingName;
+@property(nonatomic) int indoorNetworkState;
+@property(nonatomic) NSString *buildingID;
+@property(nonatomic) NSString *buildingName;
+@property(nonatomic) NSString *indoorSurpportPolygon;
+@property(nonatomic) BOOL isCellChangeFlag;
 
 @property(nonatomic) int locType;
-//@property(nonatomic) NSString *locTypeDescription;
-//@property(nonatomic) BOOL isInIndoorPark;
-//@property(nonatomic) BOOL isIndoorLocMode;
-//@property(nonatomic) BOOL isNrlAvailable;
-//@property(nonatomic) int isParkAvailable;
-//@property(nonatomic) NSString *locationDescribe;
-//@property(nonatomic) NSString *locationID;
-//@property(nonatomic) int locationWhere;
-//@property(nonatomic) NSString *networkLocationType;
-//@property(nonatomic) double nrlLat;
-//@property(nonatomic) double nrlLon;
-//@property(nonatomic) NSString *nrlResult;
-//@property(nonatomic) NSString *roadLocString;
-//@property(nonatomic) int satelliteNumber;
-//@property(nonatomic) double speed;
-//@property(nonatomic) NSString *street;
-//@property(nonatomic) NSString *streetNumber;
-//@property(nonatomic) int userIndoorState;
-//@property(nonatomic) NSString *vdrJsonString;
-//@property(nonatomic) int describeContents;
-//@property(nonatomic) NSArray *poiList;
+@property(nonatomic) NSString *locTypeDescription;
+@property(nonatomic) BOOL isInIndoorPark;
+@property(nonatomic) BOOL isIndoorLocMode;
+@property(nonatomic) BOOL isNrlAvailable;
+@property(nonatomic) int isParkAvailable;
+@property(nonatomic) NSString *locationDescribe;
+@property(nonatomic) NSString *locationID;
+@property(nonatomic) int locationWhere;
+@property(nonatomic) NSString *networkLocationType;
+@property(nonatomic) double nrlLat;
+@property(nonatomic) double nrlLon;
+@property(nonatomic) NSString *nrlResult;
+@property(nonatomic) NSString *roadLocString;
+@property(nonatomic) int satelliteNumber;
+@property(nonatomic) double speed;
+@property(nonatomic) NSString *street;
+@property(nonatomic) NSString *streetNumber;
+@property(nonatomic) int userIndoorState;
+@property(nonatomic) NSString *vdrJsonString;
+@property(nonatomic) int describeContents;
+@property(nonatomic) NSArray *poiList;
 
 @end
 
