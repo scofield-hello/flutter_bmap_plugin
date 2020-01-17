@@ -1,12 +1,12 @@
 //
 // Created by Yohom Bao on 2018-12-15.
 //
-
 #import "LocationHandlers.h"
 #import <BMKLocationkit/BMKLocationComponent.h>
 #import "FlutterBMapPlugin.h"
 #import "LocationModels.h"
 #import "MJExtension.h"
+
 static BMKLocationManager *_locationManager;
 static FlutterEventSink _eventSink;
 
