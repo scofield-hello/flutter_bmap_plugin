@@ -46,7 +46,7 @@ class LocationClientOption {
   final bool enableSimulateGps;
   final bool isNeedLocationDescribe;
   final bool isNeedLocationPoiList;
-  final bool mIsNeedDeviceDirect;
+  final bool isNeedDeviceDirect;
   final bool isNeedAltitude;
   final bool isLocationNotify;
   final bool isOpenAutoNotifyMode;
@@ -68,7 +68,7 @@ class LocationClientOption {
       this.enableSimulateGps = false,
       this.isNeedLocationDescribe = false,
       this.isNeedLocationPoiList = false,
-      this.mIsNeedDeviceDirect = false,
+      this.isNeedDeviceDirect = false,
       this.isNeedAltitude = false,
       this.isLocationNotify = false,
       this.isOpenAutoNotifyMode = false,
@@ -93,7 +93,7 @@ class LocationClientOption {
       "isIgnoreCacheException": isIgnoreCacheException,
       "isIgnoreKillProcess": isIgnoreKillProcess,
       "enableSimulateGps": enableSimulateGps,
-      "mIsNeedDeviceDirect": mIsNeedDeviceDirect,
+      "isNeedDeviceDirect": isNeedDeviceDirect,
       "isNeedLocationDescribe": isNeedLocationDescribe,
       "isNeedLocationPoiList": isNeedLocationPoiList,
       "isNeedAltitude": isNeedAltitude,
@@ -170,49 +170,49 @@ class BDLocation {
   final String cityCode;
   final String adCode;
   final String addrStr;
-  final Address address;
+  //final Address address;
   final double altitude;
   final double latitude;
   final double longitude;
   final String coorType;
-  final int delayTime;
+  //final int delayTime;
   final double direction;
   final String district;
   final String floor;
-  final int gpsAccuracyStatus;
-  final int gpsCheckStatus;
-  final int indoorLocationSource;
-  final int indoorLocationSurpport;
-  final String indoorLocationSurpportBuidlingID;
-  final String indoorLocationSurpportBuidlingName;
-  final int indoorNetworkState;
+  //final int gpsAccuracyStatus;
+  //final int gpsCheckStatus;
+  //final int indoorLocationSource;
+  //final int indoorLocationSurpport;
+  //final String indoorLocationSurpportBuidlingID;
+  //final String indoorLocationSurpportBuidlingName;
+  //final int indoorNetworkState;
   final String buildingID;
   final String buildingName;
-  final String indoorSurpportPolygon;
-  final bool isCellChangeFlag;
+  //final String indoorSurpportPolygon;
+  //final bool isCellChangeFlag;
 
   ///查看[LocType].
   final int locType;
-  final String locTypeDescription;
-  final bool isInIndoorPark;
-  final bool isIndoorLocMode;
-  final bool isNrlAvailable;
-  final int isParkAvailable;
-  final String locationDescribe;
+  //final String locTypeDescription;
+  //final bool isInIndoorPark;
+  //final bool isIndoorLocMode;
+  //final bool isNrlAvailable;
+  //final int isParkAvailable;
+  //final String locationDescribe;
   final String locationID;
-  final int locationWhere;
+  //final int locationWhere;
   final String networkLocationType;
-  final double nrlLat;
-  final double nrlLon;
-  final String nrlResult;
-  final String roadLocString;
-  final int satelliteNumber;
+  //final double nrlLat;
+  //final double nrlLon;
+  //final String nrlResult;
+  //final String roadLocString;
+  //final int satelliteNumber;
   final double speed;
   final String street;
   final String streetNumber;
-  final int userIndoorState;
-  final String vdrJsonString;
-  final int describeContents;
+  //final int userIndoorState;
+  //final String vdrJsonString;
+  //final int describeContents;
   final List<dynamic> poiList;
 
   const BDLocation(
@@ -225,47 +225,47 @@ class BDLocation {
       this.cityCode,
       this.adCode,
       this.addrStr,
-      this.address,
+      //this.address,
       this.altitude,
       this.latitude,
       this.longitude,
       this.coorType,
-      this.delayTime,
+      //this.delayTime,
       this.direction,
       this.district,
       this.floor,
-      this.gpsAccuracyStatus,
-      this.gpsCheckStatus,
-      this.indoorLocationSource,
-      this.indoorLocationSurpport,
-      this.indoorLocationSurpportBuidlingID,
-      this.indoorLocationSurpportBuidlingName,
-      this.indoorNetworkState,
+      // this.gpsAccuracyStatus,
+      // this.gpsCheckStatus,
+      // this.indoorLocationSource,
+      // this.indoorLocationSurpport,
+      // this.indoorLocationSurpportBuidlingID,
+      // this.indoorLocationSurpportBuidlingName,
+      // this.indoorNetworkState,
       this.buildingID,
       this.buildingName,
-      this.indoorSurpportPolygon,
-      this.isCellChangeFlag,
+      // this.indoorSurpportPolygon,
+      // this.isCellChangeFlag,
       this.locType,
-      this.locTypeDescription,
-      this.isInIndoorPark,
-      this.isIndoorLocMode,
-      this.isNrlAvailable,
-      this.isParkAvailable,
-      this.locationDescribe,
+      // this.locTypeDescription,
+      // this.isInIndoorPark,
+      // this.isIndoorLocMode,
+      // this.isNrlAvailable,
+      // this.isParkAvailable,
+      // this.locationDescribe,
       this.locationID,
-      this.locationWhere,
+      // this.locationWhere,
       this.networkLocationType,
-      this.nrlLat,
-      this.nrlLon,
-      this.nrlResult,
-      this.roadLocString,
-      this.satelliteNumber,
+      // this.nrlLat,
+      // this.nrlLon,
+      // this.nrlResult,
+      // this.roadLocString,
+      // this.satelliteNumber,
       this.speed,
       this.street,
       this.streetNumber,
-      this.userIndoorState,
-      this.vdrJsonString,
-      this.describeContents,
+      // this.userIndoorState,
+      // this.vdrJsonString,
+      // this.describeContents,
       this.poiList});
 
   static fromJson(Map<dynamic, dynamic> json) {
@@ -279,47 +279,47 @@ class BDLocation {
         cityCode: json["cityCode"],
         adCode: json["adCode"],
         addrStr: json["addrStr"],
-        address: Address.fromJson(json["address"]),
+        //address: Address.fromJson(json["address"]),
         altitude: json["altitude"],
         latitude: json["latitude"],
         longitude: json["longitude"],
         coorType: json["coorType"],
-        delayTime: json["delayTime"],
+        //delayTime: json["delayTime"],
         direction: json["direction"],
         district: json["district"],
         floor: json["floor"],
-        gpsAccuracyStatus: json["gpsAccuracyStatus"],
-        gpsCheckStatus: json["gpsCheckStatus"],
-        indoorLocationSource: json["indoorLocationSource"],
-        indoorLocationSurpport: json["indoorLocationSurpport"],
-        indoorLocationSurpportBuidlingID: json["indoorLocationSurpportBuidlingID"],
-        indoorLocationSurpportBuidlingName: json["indoorLocationSurpportBuidlingName"],
-        indoorNetworkState: json["indoorNetworkState"],
+        // gpsAccuracyStatus: json["gpsAccuracyStatus"],
+        // gpsCheckStatus: json["gpsCheckStatus"],
+        // indoorLocationSource: json["indoorLocationSource"],
+        // indoorLocationSurpport: json["indoorLocationSurpport"],
+        // indoorLocationSurpportBuidlingID: json["indoorLocationSurpportBuidlingID"],
+        // indoorLocationSurpportBuidlingName: json["indoorLocationSurpportBuidlingName"],
+        // indoorNetworkState: json["indoorNetworkState"],
         buildingID: json["buildingID"],
         buildingName: json["buildingName"],
-        indoorSurpportPolygon: json["indoorSurpportPolygon"],
-        isCellChangeFlag: json["isCellChangeFlag"],
+        //indoorSurpportPolygon: json["indoorSurpportPolygon"],
+        //isCellChangeFlag: json["isCellChangeFlag"],
         locType: json["locType"],
-        locTypeDescription: json["locTypeDescription"],
-        isInIndoorPark: json["isInIndoorPark"],
-        isIndoorLocMode: json["isIndoorLocMode"],
-        isNrlAvailable: json["isNrlAvailable"],
-        isParkAvailable: json["isParkAvailable"],
-        locationDescribe: json["locationDescribe"],
+        // locTypeDescription: json["locTypeDescription"],
+        // isInIndoorPark: json["isInIndoorPark"],
+        // isIndoorLocMode: json["isIndoorLocMode"],
+        // isNrlAvailable: json["isNrlAvailable"],
+        // isParkAvailable: json["isParkAvailable"],
+        // locationDescribe: json["locationDescribe"],
         locationID: json["locationID"],
-        locationWhere: json["locationWhere"],
+        //locationWhere: json["locationWhere"],
         networkLocationType: json["networkLocationType"],
-        nrlLat: json["nrlLat"],
-        nrlLon: json["nrlLon"],
-        nrlResult: json["nrlResult"],
-        roadLocString: json["roadLocString"],
-        satelliteNumber: json["satelliteNumber"],
+        // nrlLat: json["nrlLat"],
+        // nrlLon: json["nrlLon"],
+        // nrlResult: json["nrlResult"],
+        // roadLocString: json["roadLocString"],
+        // satelliteNumber: json["satelliteNumber"],
         speed: json["speed"],
         street: json["street"],
         streetNumber: json["streetNumber"],
-        userIndoorState: json["userIndoorState"],
-        vdrJsonString: json["vdrJsonString"],
-        describeContents: json["descriptionContent"],
+        // userIndoorState: json["userIndoorState"],
+        // vdrJsonString: json["vdrJsonString"],
+        // describeContents: json["descriptionContent"],
         poiList: json["poiList"]);
   }
 }
@@ -363,8 +363,8 @@ class BDLocationClient {
     await _methodChannel.invokeMethod("startLocation", options.asJson());
   }
 
-  Future<void> requestLocation() async {
-    await _methodChannel.invokeMethod("requestLocation");
+  Future<void> requestLocation(LocationClientOption options) async {
+    await _methodChannel.invokeMethod("requestLocation", options.asJson());
   }
 
   Future<void> stopLocation() async {

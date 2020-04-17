@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		014CEAC72448AAE000FFA2A2 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 014CEAC52448AAE000FFA2A2 /* libssl.a */; };
+		014CEAC82448AAE000FFA2A2 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 014CEAC62448AAE000FFA2A2 /* libcrypto.a */; };
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
 		3B80C3941E831B6300D905FE /* App.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B80C3931E831B6300D905FE /* App.framework */; };
@@ -46,6 +48,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		014CEAC52448AAE000FFA2A2 /* libssl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libssl.a; path = thirdlib/libssl.a; sourceTree = "<group>"; };
+		014CEAC62448AAE000FFA2A2 /* libcrypto.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcrypto.a; path = thirdlib/libcrypto.a; sourceTree = "<group>"; };
 		1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GeneratedPluginRegistrant.h; sourceTree = "<group>"; };
 		1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratedPluginRegistrant.m; sourceTree = "<group>"; };
 		3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AppFrameworkInfo.plist; path = Flutter/AppFrameworkInfo.plist; sourceTree = "<group>"; };
@@ -82,6 +86,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				014CEAC72448AAE000FFA2A2 /* libssl.a in Frameworks */,
+				014CEAC82448AAE000FFA2A2 /* libcrypto.a in Frameworks */,
 				8359ABAB2361C7A4000B3B5C /* libz.tbd in Frameworks */,
 				8359ABA92361C797000B3B5C /* SystemConfiguration.framework in Frameworks */,
 				8359ABA72361C791000B3B5C /* Security.framework in Frameworks */,
@@ -100,9 +106,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		014CEAC42448AAA200FFA2A2 /* thirdlib */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = thirdlib;
+			sourceTree = "<group>";
+		};
 		1FDA1BB4BCF2C77D124A575E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				014CEAC62448AAE000FFA2A2 /* libcrypto.a */,
+				014CEAC52448AAE000FFA2A2 /* libssl.a */,
 				8359ABAA2361C7A4000B3B5C /* libz.tbd */,
 				8359ABA82361C797000B3B5C /* SystemConfiguration.framework */,
 				8359ABA62361C791000B3B5C /* Security.framework */,
@@ -133,6 +148,7 @@
 		97C146E51CF9000F007C117D = {
 			isa = PBXGroup;
 			children = (
+				014CEAC42448AAA200FFA2A2 /* thirdlib */,
 				9740EEB11CF90186004384FC /* Flutter */,
 				97C146F01CF9000F007C117D /* Runner */,
 				97C146EF1CF9000F007C117D /* Products */,
@@ -445,6 +461,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
+					"$(PROJECT_DIR)/thirdlib",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.chuangdun.flutterBmapPluginExample;
 				PRODUCT_NAME = baidu;
@@ -581,6 +598,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
+					"$(PROJECT_DIR)/thirdlib",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.chuangdun.flutterBmapPluginExample;
 				PRODUCT_NAME = baidu;
@@ -610,6 +628,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
+					"$(PROJECT_DIR)/thirdlib",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.chuangdun.flutterBmapPluginExample;
 				PRODUCT_NAME = baidu;

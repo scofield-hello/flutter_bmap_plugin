@@ -86,7 +86,7 @@ class LocationHandler(activity: Activity) : MethodChannel.MethodCallHandler,
         locationOption.isIgnoreCacheException = options["isIgnoreCacheException"] as Boolean
         locationOption.isIgnoreKillProcess = options["isIgnoreKillProcess"] as Boolean
         locationOption.enableSimulateGps = options["enableSimulateGps"] as Boolean
-        locationOption.mIsNeedDeviceDirect = options["mIsNeedDeviceDirect"] as Boolean
+        locationOption.mIsNeedDeviceDirect = options["isNeedDeviceDirect"] as Boolean
         locationOption.isNeedAltitude = options["isNeedAltitude"] as Boolean
         locationOption.setIsNeedLocationDescribe(options["isNeedLocationDescribe"] as Boolean)
         locationOption.setIsNeedLocationPoiList(options["isNeedLocationPoiList"] as Boolean)

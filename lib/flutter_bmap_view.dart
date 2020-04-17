@@ -162,6 +162,7 @@ class MarkerOptions {
   MarkerOptions(
       {this.position,
       this.title,
+      this.subtitle,
       this.icon,
       this.visible = true,
       this.animateType = MarkerAnimateType.none,
@@ -182,6 +183,7 @@ class MarkerOptions {
   bool flat;
   double rotate;
   String title;
+  String subtitle;
   bool visible;
   Map<dynamic, dynamic> extraInfo;
 
@@ -200,6 +202,7 @@ class MarkerOptions {
       'flat': flat,
       'rotate': rotate,
       'title': title,
+      'subtitle': subtitle,
       'visible': visible,
       'extraInfo': extraInfo,
       'zIndex': zIndex
@@ -503,7 +506,7 @@ class FlutterBMapViewController {
   ///移动地图中心至指定经纬度.
   ///[latLng] 经纬度对象.
   ///[zoom] 地图缩放级别.
-  Future<void> animateMapStatusNewLatLng(LatLng latLng, {double zoom}) {
+  Future<void> animateMapStatusNewLatLng(LatLng latLng, {double zoom=0.0}) {
     return _methodChannel
         .invokeMethod("animateMapStatusNewLatLng", {'center': latLng.asJson(), 'zoom': zoom});
   }

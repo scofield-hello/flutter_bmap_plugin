@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bmap_plugin/flutter_bmap_plugin.dart';
-
+import 'dart:io';
 void main() => runApp(MyApp());
 
 class MyApp extends StatefulWidget {
@@ -18,7 +18,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);    
     _controller = FlutterBMapViewController();
     _locationClient = BDLocationClient();
     _locationClient.onReceiveLocation.listen((location) {
@@ -54,8 +54,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       appBar: AppBar(
         title: const Text('FlutterBMapView'),
       ),
-      body: SingleChildScrollView(
-        child: Column(
+      body: Column(
           children: <Widget>[
             Container(
               height: 300,
@@ -88,12 +87,12 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             FlatButton(onPressed: _isPolygonContainsPoint, child: Text("返回一个点是否在一个多边形区域内")),
           ],
         ),
-      ),
     ));
   }
 
   void _onBMapViewCreated() {
-    _controller.setMapViewResume();
+    
+    //_controller.setMapViewResume();
   }
 
   void _startLocation() async {
@@ -108,7 +107,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   void _requestLocation() async {
     try {
-      await _locationClient.requestLocation();
+      
+      var options =
+          LocationClientOption(coorType: CoorType.bd09ll, prodName: "Flutter Plugin Test");
+      await _locationClient.requestLocation(options);    
     } on PlatformException catch (e) {
       print(e);
     }
@@ -195,6 +197,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   }
 
   void _addMarkers() {
+    
     var latLngList = _latLngList();
     List<MarkerOptions> markers = [];
     for (var index = 0; index < latLngList.length; index++) {
@@ -202,12 +205,13 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           zIndex: 100,
           position: latLngList[index],
           title: "P$index",
-          icon: "assets/marker.png",
+          subtitle: "马塍路文三路口东部软件园创新大厦A-302",
+          icon: Platform.isAndroid? "assets/marker.png":"marker.png",
           extraInfo: {'name': "P$index", 'address': "马塍路文三路口东部软件园创新大厦A-302"});
       markers.add(option);
     }
-    markers.first.icon = "assets/Icon_start.png";
-    markers.last.icon = "assets/Icon_end.png";
+    markers.first.icon = Platform.isAndroid ? "assets/Icon_start.png":"Icon_start.png";
+    markers.last.icon = Platform.isAndroid ? "assets/Icon_end.png": "Icon_end.png";
     _controller.addMarkerOverlays(markers);
   }
 
@@ -224,10 +228,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void _addPolylineOptions() {
     var latLngList = _latLngList();
     var customTextureList = [
-      "assets/Icon_road_blue_arrow.png",
-      "assets/Icon_road_green_arrow.png",
-      "assets/Icon_road_red_arrow.png",
-      "assets/Icon_road_yellow_arrow.png"
+      Platform.isAndroid ? "assets/Icon_road_blue_arrow.png" : "Icon_road_blue_arrow.png",
+      Platform.isAndroid ? "assets/Icon_road_green_arrow.png" : "Icon_road_green_arrow.png",
+      Platform.isAndroid ? "assets/Icon_road_red_arrow.png" : "Icon_road_red_arrow.png",
+      Platform.isAndroid ? "assets/Icon_road_yellow_arrow.png" : "Icon_road_yellow_arrow.png"
     ];
     var intRandom = Random();
     var textureIndex = <int>[];
@@ -254,6 +258,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void dispose() {
     super.dispose();
     WidgetsBinding.instance.removeObserver(this);
+    _locationClient.dispose();
     _stopLocation();
     _locationClient.dispose();
     _controller.dispose();
@@ -267,14 +272,13 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         _controller.setMapViewResume();
         break;
       case AppLifecycleState.inactive:
-        print("didChangeAppLifecycleState:inactive");
+        //print("didChangeAppLifecycleState:inactive");
         break;
       case AppLifecycleState.paused:
         print("didChangeAppLifecycleState:pause");
         _controller.setMapViewPause();
         break;
-      case AppLifecycleState.suspending:
-        print("didChangeAppLifecycleState:suspending");
+      default:
         break;
     }
   }
