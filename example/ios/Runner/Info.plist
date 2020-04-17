@@ -42,6 +42,10 @@
 	<string>需要访问您的位置信息</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>需要访问您的位置信息</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>location</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

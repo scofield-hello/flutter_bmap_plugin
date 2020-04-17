@@ -151,7 +151,7 @@
             NSArray<NSNumber*> *textureIndex = [polylineData objectForKey:@"textureIndex"];
             BOOL dottedLine = ((NSNumber*)[polylineData objectForKey:@"dottedLine"]).boolValue;
             NSDictionary *extraInfo = [polylineData objectForKey:@"extraInfo"];
-            CLLocationCoordinate2D coords[1000] = {0};
+            CLLocationCoordinate2D coords[points.count];
             for (int i = 0; i < points.count; i++) {
                 NSDictionary *point = [points objectAtIndex:i];
                 double latitude = ((NSNumber*)[point objectForKey:@"latitude"]).doubleValue;
