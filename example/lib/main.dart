@@ -29,12 +29,14 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       var extraInfo = marker.extraInfo;
       var name = extraInfo['name'];
       var address = extraInfo['address'];
-      var infoWindow = InfoWindow(position: marker.position, info: "$name\n$address");
-      _controller.showInfoWindow(infoWindow);
+      print(marker.asJson());
+      //var infoWindow = InfoWindow(position: marker.position, info: "$name\n$address");
+      //_controller.showInfoWindow(infoWindow);
       _controller.animateMapStatusNewLatLng(marker.position);
     });
     _controller.onMapClick.listen((LatLng latLng) async {
-      _controller.hideInfoWindow();
+      //_controller.hideInfoWindow();
+      print(latLng.asJson());
     });
     _controller.onMapLongClick.listen((LatLng latLng) async {
       print(latLng.asJson());

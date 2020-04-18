@@ -11,8 +11,9 @@
 #import "CDPointAnnotation.h"
 #import "CDPolyline.h"
 #import "BMapViewCons.h"
-@interface FlutterBMapView()<BMKMapViewDelegate>
+@interface FlutterBMapView()<BMKMapViewDelegate,FlutterStreamHandler>
 @property (nonatomic, strong) BMKMapView *mapView;
+@property (nonatomic,strong) FlutterEventSink events;
 @end
 
 @implementation FlutterBMapView{
@@ -50,22 +51,16 @@
             [self.mapView setMapType:BMKMapTypeNone];
         }
         BOOL overlookingEnabled = ((NSNumber *)[createParams objectForKey:@"overlookingGesturesEnabled"]).boolValue;
-        NSLog(@"overlookingEnabled:%d", overlookingEnabled);
         [self.mapView setOverlookEnabled:overlookingEnabled];
         BOOL rotateEnabled = ((NSNumber *)[createParams objectForKey:@"rotateGesturesEnabled"]).boolValue;
-        NSLog(@"rotateEnable:%d", rotateEnabled);
         [self.mapView setRotateEnabled:rotateEnabled];
         BOOL showMapScaleBar = ((NSNumber *)[createParams objectForKey:@"scaleControlEnabled"]).boolValue;
-        NSLog(@"showMapScaleBar:%d", showMapScaleBar);
         [self.mapView setShowMapScaleBar:showMapScaleBar];
         BOOL scrollEnabled = ((NSNumber *)[createParams objectForKey:@"scrollGesturesEnabled"]).boolValue;
-        NSLog(@"scrollEnabled:%d", scrollEnabled);
         [self.mapView setScrollEnabled:scrollEnabled];
         BOOL zoomEnabled = ((NSNumber *)[createParams objectForKey:@"zoomControlsEnabled"]).boolValue;
-        NSLog(@"zoomEnabled:%d", zoomEnabled);
         [self.mapView setZoomEnabled:zoomEnabled];
         BOOL zoomEnabledWithTap = ((NSNumber *)[createParams objectForKey:@"zoomGesturesEnabled"]).boolValue;
-        NSLog(@"zoomEnabledWithTap:%d", zoomEnabledWithTap);
         [self.mapView setZoomEnabledWithTap:zoomEnabledWithTap];
         NSDictionary *mapStatutsData = [createParams objectForKey:@"mapStatus"];
         if (mapStatutsData) {
@@ -83,6 +78,11 @@
             [self.mapView setMapStatus:mapStatus];
         }
     }
+    NSString *enventName = [NSString stringWithFormat:@"%@_%lld", CDBMapViewEvent, viewId];
+    FlutterEventChannel *mapViewEventChannel = [FlutterEventChannel
+                                               eventChannelWithName:enventName
+                                               binaryMessenger:messager];
+    [mapViewEventChannel setStreamHandler:self];
     NSString *channelName = [NSString stringWithFormat:@"%@_%lld", CDBMapViewRegistry, viewId];
     FlutterMethodChannel *channel = [FlutterMethodChannel methodChannelWithName:channelName binaryMessenger:messager];
     __weak FlutterBMapView *weakRef = self;
@@ -90,10 +90,14 @@
         NSLog(@"onMethodCall method name: %@ with args: %@", call.method, call.arguments);
         FlutterBMapView *innerRef = weakRef;
         if ([CDBMapViewPause isEqualToString:call.method]) {
-            [innerRef setMapViewWillDisappear];
+            if (innerRef.mapView) {
+                [innerRef.mapView viewWillDisappear];
+            }
             result(nil);
         }else if ([CDBMapViewResume isEqualToString:call.method]) {
-            [innerRef setMapViewWillAppear];
+            if (innerRef.mapView) {
+                [innerRef.mapView viewWillAppear];
+            }
             result(nil);
         }else if ([CDBMapViewDestroy isEqualToString:call.method]) {
             result(nil);
@@ -185,18 +189,6 @@
     return _mapView;
 }
 
-- (void)setMapViewWillAppear{
-    if (self.mapView) {
-        [self.mapView viewWillAppear];
-    }
-}
-
-- (void)setMapViewWillDisappear{
-    if (self.mapView) {
-        [self.mapView viewWillDisappear];
-    }
-}
-
 #pragma mark - BMKMapViewDelegate
 
 - (BMKAnnotationView *)mapView:(BMKMapView *)mapView viewForAnnotation:(id<BMKAnnotation>)annotation{
@@ -235,4 +227,90 @@
        }
        return nil;
 }
+
+- (void)mapView:(BMKMapView *)mapView onClickedMapBlank:(CLLocationCoordinate2D)coordinate{
+    if (self.events) {
+        NSMutableDictionary *position = [[NSMutableDictionary alloc] initWithCapacity:2];
+        [position setObject:[NSNumber numberWithDouble:coordinate.latitude] forKey:@"latitude"];
+        [position setObject:[NSNumber numberWithDouble:coordinate.longitude] forKey:@"longitude"];
+        NSMutableDictionary *eventData = [[NSMutableDictionary alloc] initWithCapacity:2];
+        [eventData setObject:@0 forKey:@"event"];
+        [eventData setObject:position forKey:@"data"];
+        self.events(eventData);
+    }
+}
+
+- (void)mapView:(BMKMapView *)mapView onClickedMapPoi:(BMKMapPoi *)mapPoi{
+    if (self.events) {
+        NSMutableDictionary *position = [[NSMutableDictionary alloc] initWithCapacity:2];
+        [position setObject:[NSNumber numberWithDouble:mapPoi.pt.latitude] forKey:@"latitude"];
+        [position setObject:[NSNumber numberWithDouble:mapPoi.pt.longitude] forKey:@"longitude"];
+        NSMutableDictionary *poiData = [[NSMutableDictionary alloc] initWithCapacity:3];
+        [poiData setObject:mapPoi.uid forKey:@"uid"];
+        [poiData setObject:mapPoi.text forKey:@"name"];
+        [poiData setObject:position forKey:@"position"];
+        NSMutableDictionary *eventData = [[NSMutableDictionary alloc] initWithCapacity:2];
+        [eventData setObject:@1 forKey:@"event"];
+        [eventData setObject:poiData forKey:@"data"];
+        self.events(eventData);
+    }
+}
+
+- (void)mapview:(BMKMapView *)mapView onLongClick:(CLLocationCoordinate2D)coordinate{
+    if (self.events) {
+        NSMutableDictionary *position = [[NSMutableDictionary alloc] initWithCapacity:2];
+        [position setObject:[NSNumber numberWithDouble:coordinate.latitude] forKey:@"latitude"];
+        [position setObject:[NSNumber numberWithDouble:coordinate.longitude] forKey:@"longitude"];
+        NSMutableDictionary *eventData = [[NSMutableDictionary alloc] initWithCapacity:2];
+        [eventData setObject:@2 forKey:@"event"];
+        [eventData setObject:position forKey:@"data"];
+        self.events(eventData);
+    }
+}
+
+- (void)mapview:(BMKMapView *)mapView onDoubleClick:(CLLocationCoordinate2D)coordinate{
+    if (self.events) {
+        NSMutableDictionary *position = [[NSMutableDictionary alloc] initWithCapacity:2];
+        [position setObject:[NSNumber numberWithDouble:coordinate.latitude] forKey:@"latitude"];
+        [position setObject:[NSNumber numberWithDouble:coordinate.longitude] forKey:@"longitude"];
+        NSMutableDictionary *eventData = [[NSMutableDictionary alloc] initWithCapacity:2];
+        [eventData setObject:@3 forKey:@"event"];
+        [eventData setObject:position forKey:@"data"];
+        self.events(eventData);
+    }
+}
+
+- (void)mapView:(BMKMapView *)mapView clickAnnotationView:(BMKAnnotationView *)view{
+    if (self.events) {
+        id<BMKAnnotation> annotation = view.annotation;
+        if ([annotation isKindOfClass:[CDPointAnnotation class]]) {
+            CDPointAnnotation * cdPointAnnotation = (CDPointAnnotation*)annotation;
+            CLLocationCoordinate2D coordinate = cdPointAnnotation.coordinate;
+            NSMutableDictionary *position = [[NSMutableDictionary alloc] initWithCapacity:2];
+            [position setObject:[NSNumber numberWithDouble:coordinate.latitude] forKey:@"latitude"];
+            [position setObject:[NSNumber numberWithDouble:coordinate.longitude] forKey:@"longitude"];
+            NSMutableDictionary *markerData = [[NSMutableDictionary alloc] initWithCapacity:3];
+            [markerData setObject:cdPointAnnotation.title forKey:@"title"];
+            [markerData setObject:cdPointAnnotation.extraInfo forKey:@"extraInfo"];
+            [markerData setObject:position forKey:@"position"];
+            NSMutableDictionary *eventData = [[NSMutableDictionary alloc] initWithCapacity:2];
+            [eventData setObject:@4 forKey:@"event"];
+            [eventData setObject:markerData forKey:@"data"];
+            self.events(eventData);
+        }
+    }
+}
+
+#pragma mark - FlutterStreamHandler
+- (FlutterError *)onListenWithArguments:(id)arguments eventSink:(FlutterEventSink)events{
+    self.events = events;
+    return nil;
+}
+
+- (FlutterError *)onCancelWithArguments:(id)arguments{
+    self.events = nil;
+    return nil;
+}
+
+
 @end

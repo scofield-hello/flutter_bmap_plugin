@@ -11,7 +11,7 @@
 #import "MethodCallDelegate.h"
 
 @interface LocationMethodHandler()<BMKLocationManagerDelegate,UIAlertViewDelegate>
-@property (nonatomic) BOOL start;
+@property (nonatomic,assign) BOOL start;
 @property (nonatomic,strong) BMKLocationManager *locationManager;
 @property (nonatomic,strong) FlutterEventSink events;
 @property (nonatomic,strong) NSDateFormatter *dateFormatter;

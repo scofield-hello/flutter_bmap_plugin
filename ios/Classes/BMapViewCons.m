@@ -8,7 +8,7 @@
 #import "BMapViewCons.h"
 
 NSString * const CDBMapViewRegistry = @"com.chuangdun.flutter/BMapApi.FlutterBMapView";
-
+NSString * const CDBMapViewEvent = @"com.chuangdun.flutter/BMapApi.FlutterBMapViewEvent";
 NSString * const CDBMapViewPause = @"setMapViewPause";
 NSString * const CDBMapViewResume = @"setMapViewResume";
 NSString * const CDBMapViewDestroy =@"setMapViewDestroy";

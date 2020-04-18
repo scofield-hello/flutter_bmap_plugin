@@ -8,7 +8,7 @@
 #import <Foundation/Foundation.h>
 
 extern NSString * const CDBMapViewRegistry;
-
+extern NSString * const CDBMapViewEvent;
 extern NSString * const CDBMapViewPause;
 extern NSString * const CDBMapViewResume;
 extern NSString * const CDBMapViewDestroy;
