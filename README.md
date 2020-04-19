@@ -29,6 +29,26 @@ android {
     }
 ```
 
+## 集成百度地图iOS版本
+1.在Info.plist中添加下面的配置
+```
+<key>BaiduMap</key>
+	<dict>
+		<key>location_key</key>
+		<string>your location_sdk_key</string>
+		<key>mapsdk_key</key>
+		<string>your map_sdk_key</string>
+	</dict>
+
+<key>UIBackgroundModes</key>
+	<array>
+		<string>location</string>
+	</array>
+```
+2.添加第三方openssl静态库
+
+[操作步骤](http://lbsyun.baidu.com/apiconsole/key)
+
 ## 地图相关使用方法
 
 1.显示百度地图(FlutterBMapView)
@@ -164,7 +184,7 @@ class XxxState extends State<XxxWidget> with WidgetsBindingObserver{
     _controller.addMarkerOverlays(markers);
   }
 ```
-8.显示文本信息
+8.显示文本信息(iOS未实现)
 
 ```dart
   void _addTextOptionsList() {
@@ -204,7 +224,7 @@ class XxxState extends State<XxxWidget> with WidgetsBindingObserver{
 
 ```
 
-10.显示信息窗InfoWindow
+10.显示信息窗InfoWindow(iOS未实现).
 
 ```dart
   _controller.onMarkerClick.listen((Marker marker) async {
@@ -230,19 +250,19 @@ class XxxState extends State<XxxWidget> with WidgetsBindingObserver{
   ///[zoom] 地图缩放级别.
   _controller.animateMapStatusNewLatLng(LatLng latLng, {double zoom});
 
-  ///设置显示在规定宽高中的地图地理范围.
+  ///设置显示在规定宽高中的地图地理范围(iOS未实现).
   ///[bounds] 经纬度范围.
   ///[width] 地图宽度,[height] 地图高度.
   _controller.animateMapStatusUpdateNewBounds(List<LatLng> bounds, {int width, int height});
 
-  ///设置显示在指定相对与MapView的padding中的地图地理范围.
+  ///设置显示在指定相对与MapView的padding中的地图地理范围(iOS未实现).
   ///[bounds] 经纬度范围.
   ///[paddingTop]...padding设置
   _controller.animateMapStatusBoundsPadding(List<LatLng> bounds,
       {int paddingLeft = 0, int paddingTop = 0, int paddingRight = 0, int paddingBottom = 0});
   }
 
-  ///根据Padding设置地理范围的合适缩放级别.
+  ///根据Padding设置地理范围的合适缩放级别(iOS未实现).
   ///[bounds] 经纬度范围.[paddingTop]... padding设置
   _controller.animateMapStatusBoundsZoom(List<LatLng> bounds,
         {int paddingLeft = 0, int paddingTop = 0, int paddingRight = 0, int paddingBottom = 0});
@@ -364,7 +384,7 @@ class XxxState extends State<XxxWidget> with WidgetsBindingObserver{
   }
 ```
 
-3.计算面积
+3.计算面积(iOS未实现)
 
 ```dart
   void _calculateArea() async {
