@@ -21,7 +21,6 @@ class FlutterBMapPlugin {
         fun registerWith(registrar: Registrar) {
             FlutterBMapPlugin.registrar = registrar
             SDKInitializer.initialize(registrar.activity().applicationContext)
-            SDKInitializer.setCoordType(CoordType.BD09LL)
             methodChannel = MethodChannel(registrar.messenger(), LOCATION_CHANNEL)
             val locationHandler = LocationHandler(registrar.activity())
             methodChannel.setMethodCallHandler(locationHandler)
