@@ -49,6 +49,9 @@ android {
 
 [操作步骤](http://lbsyun.baidu.com/apiconsole/key)
 
+3.添加图片资源
+将example/assets中的图片资源添加至ios/Runner的资源中
+
 ## 地图相关使用方法
 
 1.显示百度地图(FlutterBMapView)
@@ -174,12 +177,12 @@ class XxxState extends State<XxxWidget> with WidgetsBindingObserver{
           zIndex: 100,
           position: latLngList[index],
           title: "P$index",
-          icon: "assets/marker.png",
+          icon: Platform.isAndroid? "assets/marker.png":"marker.png",
           extraInfo: {'name': "P$index", 'address': "马塍路文三路口东部软件园创新大厦A-302"});
       markers.add(option);
     }
-    markers.first.icon = "assets/Icon_start.png";
-    markers.last.icon = "assets/Icon_end.png";
+    markers.first.icon = Platform.isAndroid ? "assets/Icon_start.png":"Icon_start.png";
+    markers.last.icon = Platform.isAndroid ? "assets/Icon_end.png": "Icon_end.png";
     //显示标注
     _controller.addMarkerOverlays(markers);
   }
@@ -206,10 +209,10 @@ class XxxState extends State<XxxWidget> with WidgetsBindingObserver{
   void _addPolylineOptions() {
     var latLngList = _latLngList();
     var customTextureList = [
-      "assets/Icon_road_blue_arrow.png",
-      "assets/Icon_road_green_arrow.png",
-      "assets/Icon_road_red_arrow.png",
-      "assets/Icon_road_yellow_arrow.png"
+      Platform.isAndroid ? "assets/Icon_road_blue_arrow.png" : "Icon_road_blue_arrow.png",
+      Platform.isAndroid ? "assets/Icon_road_green_arrow.png" : "Icon_road_green_arrow.png",
+      Platform.isAndroid ? "assets/Icon_road_red_arrow.png" : "Icon_road_red_arrow.png",
+      Platform.isAndroid ? "assets/Icon_road_yellow_arrow.png" : "Icon_road_yellow_arrow.png"
     ];
     var intRandom = Random();
     var textureIndex = <int>[];
