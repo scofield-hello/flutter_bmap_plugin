@@ -4,7 +4,7 @@
 ![](https://github.com/scofield-hello/flutter_bmap_plugin/blob/master/screenshot.png)
 
 ## 在项目中添加插件依赖项
-在pubspec.yaml中添加插件依赖项
+1. 在pubspec.yaml中添加插件依赖项
 
 ```yaml
   dependencies:
@@ -13,11 +13,13 @@
 ```
 
 ## 集成百度地图Android版本
-1.先申请一个apikey
+
+1. 先申请一个apikey
 http://lbsyun.baidu.com/apiconsole/key
 
-2.修改 `你的项目目录/app/build.gradle`
+2. 修改 `你的项目目录/app/build.gradle`
 在`android/defaultConfig`节点修改`manifestPlaceholders`,新增百度地图AK配置
+
 ```
 android {
     ....
@@ -30,7 +32,9 @@ android {
 ```
 
 ## 集成百度地图iOS版本
-1.在Info.plist中添加下面的配置
+
+1. 在Info.plist中添加下面的配置
+
 ```
 <key>BaiduMap</key>
 	<dict>
@@ -45,16 +49,18 @@ android {
 		<string>location</string>
 	</array>
 ```
-2.添加第三方openssl静态库
+
+2. 添加第三方openssl静态库
 
 [操作步骤](http://lbsyun.baidu.com/apiconsole/key)
 
-3.添加图片资源
+3. 添加图片资源
+
 将example/assets中的图片资源添加至ios/Runner的资源中
 
 ## 地图相关使用方法
 
-1.显示百度地图(FlutterBMapView)
+1. 显示百度地图(FlutterBMapView)
 
 ```dart
 class XxxState extends State<XxxWidget> with WidgetsBindingObserver{
@@ -113,7 +119,8 @@ class XxxState extends State<XxxWidget> with WidgetsBindingObserver{
   } 
 }  
 ```
-2.处理地图点击事件
+
+2. 处理地图点击事件
 
 ```dart
   _controller.onMapClick.listen((LatLng latLng) async {
@@ -121,7 +128,8 @@ class XxxState extends State<XxxWidget> with WidgetsBindingObserver{
     //隐藏InfoWindow等...
   });
 ```
-3.处理地图双击事件
+
+3. 处理地图双击事件
 
 ```dart
   _controller.onMapDoubleClick.listen((LatLng latLng) async {
@@ -129,7 +137,7 @@ class XxxState extends State<XxxWidget> with WidgetsBindingObserver{
   });
 ```
 
-4.处理地图长点击事件
+4. 处理地图长点击事件
 
 ```dart
   _controller.onMapLongClick.listen((LatLng latLng) async {
@@ -137,7 +145,7 @@ class XxxState extends State<XxxWidget> with WidgetsBindingObserver{
   });
 ```
 
-5.处理标注点击事件
+5. 处理标注点击事件
 
 ```dart
   _controller.onMarkerClick.listen((Marker marker) async {
@@ -146,7 +154,7 @@ class XxxState extends State<XxxWidget> with WidgetsBindingObserver{
   });
 ```
 
-6.处理Poi点击事件
+6. 处理Poi点击事件
 
 ```dart
   _controller.onMapPoiClick.listen((MapPoi poi) async {
@@ -154,7 +162,7 @@ class XxxState extends State<XxxWidget> with WidgetsBindingObserver{
   });
 ```
 
-7.新增标注点
+7. 新增标注点
 
 ```dart
   ///测试点列表.
@@ -187,7 +195,8 @@ class XxxState extends State<XxxWidget> with WidgetsBindingObserver{
     _controller.addMarkerOverlays(markers);
   }
 ```
-8.显示文本信息(iOS未实现)
+
+8. 显示文本信息(iOS未实现)
 
 ```dart
   void _addTextOptionsList() {
@@ -203,7 +212,7 @@ class XxxState extends State<XxxWidget> with WidgetsBindingObserver{
   }
 ```
 
-9.画折线(Texture)
+9. 画折线(Texture)
 
 ```dart
   void _addPolylineOptions() {
@@ -227,7 +236,7 @@ class XxxState extends State<XxxWidget> with WidgetsBindingObserver{
 
 ```
 
-10.显示信息窗InfoWindow(iOS未实现).
+10. 显示信息窗InfoWindow(iOS未实现).
 
 ```dart
   _controller.onMarkerClick.listen((Marker marker) async {
@@ -245,7 +254,7 @@ class XxxState extends State<XxxWidget> with WidgetsBindingObserver{
    });
 ```
 
-11.设置地图显示范围
+11. 设置地图显示范围
 
 ```dart
   ///设置地图中心点以及缩放级别.
@@ -271,14 +280,14 @@ class XxxState extends State<XxxWidget> with WidgetsBindingObserver{
         {int paddingLeft = 0, int paddingTop = 0, int paddingRight = 0, int paddingBottom = 0});
 ```
 
-12.清除地图图层
+12. 清除地图图层
 ```dart
   _controller.clearMap();
 ```
 
 ## 定位相关使用方法
 
-1.初始化
+1. 初始化
 
 ```dart
   final _locationClient = BDLocationClient();
@@ -295,7 +304,7 @@ class XxxState extends State<XxxWidget> with WidgetsBindingObserver{
   }
 ```
 
-2.开启定位
+2. 开启定位
 
 ```dart
   void _startLocation() async{
@@ -309,7 +318,7 @@ class XxxState extends State<XxxWidget> with WidgetsBindingObserver{
   }
 ```
 
-3.单次请求定位.
+3. 单次请求定位.
 
 ```dart
   void _requestLocation() async {
@@ -321,7 +330,7 @@ class XxxState extends State<XxxWidget> with WidgetsBindingObserver{
   }
 ```
 
-4.停止定位
+4. 停止定位
 
 ```dart
 
@@ -336,7 +345,7 @@ class XxxState extends State<XxxWidget> with WidgetsBindingObserver{
   }
 ```
 
-5.判断是否启动定位
+5. 判断是否启动定位
 ```dart
  void _isStart() async{
     try {
@@ -347,9 +356,10 @@ class XxxState extends State<XxxWidget> with WidgetsBindingObserver{
     }
   }
 ```
+
 ## 百度地图工具方法
 
-1.坐标转换
+1. 坐标转换
 
 ```dart
   ///单个坐标转换.
@@ -373,7 +383,7 @@ class XxxState extends State<XxxWidget> with WidgetsBindingObserver{
   }
 ```
 
-2.计算两点间距离
+2. 计算两点间距离
 
 ```dart
   void _getDistance() async {
@@ -387,7 +397,7 @@ class XxxState extends State<XxxWidget> with WidgetsBindingObserver{
   }
 ```
 
-3.计算面积(iOS未实现)
+3. 计算面积(iOS未实现)
 
 ```dart
   void _calculateArea() async {
@@ -401,7 +411,7 @@ class XxxState extends State<XxxWidget> with WidgetsBindingObserver{
   }
 ```
 
-4.返回某点距线上最近的点
+4. 返回某点距线上最近的点
 
 ```dart
   void _getNearestPointFromLine() async {
@@ -416,7 +426,7 @@ class XxxState extends State<XxxWidget> with WidgetsBindingObserver{
   }
 ```
 
-5.判断圆形是否包含传入的经纬度点
+5. 判断圆形是否包含传入的经纬度点
 
 ```dart
   void _isCircleContainsPoint() async {
@@ -430,7 +440,7 @@ class XxxState extends State<XxxWidget> with WidgetsBindingObserver{
   }
 ```
 
-6.判断一个点是否在一个多边形区域内
+6. 判断一个点是否在一个多边形区域内
 
 ```dart
   void _isPolygonContainsPoint() async {
