@@ -179,6 +179,7 @@ class LocationHandler(activity: Activity) : MethodChannel.MethodCallHandler,
             resultMap["cityCode"] = location?.cityCode
             resultMap["adCode"] = location?.adCode
             resultMap["addrStr"] = location?.addrStr
+            /**
             val address = mutableMapOf<String, Any?>()
             address["adcode"] = location?.address?.adcode
             address["countryCode"] = location?.address?.countryCode
@@ -191,14 +192,16 @@ class LocationHandler(activity: Activity) : MethodChannel.MethodCallHandler,
             address["street"] = location?.address?.street
             address["address"] = location?.address?.address
             resultMap["address"] = address
+            */
             resultMap["altitude"] = location?.altitude
             resultMap["latitude"] = location?.latitude
             resultMap["longitude"] = location?.longitude
             resultMap["coorType"] = location?.coorType
-            resultMap["delayTime"] = location?.delayTime
+            //resultMap["delayTime"] = location?.delayTime
             resultMap["direction"] = location?.direction
             resultMap["district"] = location?.district
             resultMap["floor"] = location?.floor
+            /**
             resultMap["gpsAccuracyStatus"] = location?.gpsAccuracyStatus
             resultMap["gpsCheckStatus"] = location?.gpsCheckStatus
             resultMap["indoorLocationSource"] = location?.indoorLocationSource
@@ -206,31 +209,40 @@ class LocationHandler(activity: Activity) : MethodChannel.MethodCallHandler,
             resultMap["indoorLocationSurpportBuidlingID"] = location?.indoorLocationSurpportBuidlingID
             resultMap["indoorLocationSurpportBuidlingName"] = location?.indoorLocationSurpportBuidlingName
             resultMap["indoorNetworkState"] = location?.indoorNetworkState
+            */
             resultMap["buildingID"] = location?.buildingID
             resultMap["buildingName"] = location?.buildingName
+            /**
             resultMap["indoorSurpportPolygon"] = location?.indoorSurpportPolygon
             resultMap["isCellChangeFlag"] = location?.isCellChangeFlag
+            */
             resultMap["locType"] = location?.locType
+            /**
             resultMap["locTypeDescription"] = location?.locTypeDescription
             resultMap["isInIndoorPark"] = location?.isInIndoorPark
             resultMap["isIndoorLocMode"] = location?.isIndoorLocMode
             resultMap["isNrlAvailable"] = location?.isNrlAvailable
             resultMap["isParkAvailable"] = location?.isParkAvailable
             resultMap["locationDescribe"] = location?.locationDescribe
+            */
             resultMap["locationID"] = location?.locationID
-            resultMap["locationWhere"] = location?.locationWhere
+            //resultMap["locationWhere"] = location?.locationWhere
             resultMap["networkLocationType"] = location?.networkLocationType
+            /**
             resultMap["nrlLat"] = location?.nrlLat
             resultMap["nrlLon"] = location?.nrlLon
             resultMap["nrlResult"] = location?.nrlResult
             resultMap["roadLocString"] = location?.roadLocString
             resultMap["satelliteNumber"] = location?.satelliteNumber
+            */
             resultMap["speed"] = location?.speed
             resultMap["street"] = location?.street
             resultMap["streetNumber"] = location?.streetNumber
+            /**
             resultMap["userIndoorState"] = location?.userIndoorState
             resultMap["vdrJsonString"] = location?.vdrJsonString
             resultMap["descriptionContent"] = location?.describeContents()
+            */
             val poiList = location?.poiList
             val serializedPoiList = mutableListOf<Map<String, *>>()
             poiList?.forEach {
