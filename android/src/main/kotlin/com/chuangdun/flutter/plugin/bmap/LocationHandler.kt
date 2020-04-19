@@ -238,6 +238,7 @@ class LocationHandler(activity: Activity) : MethodChannel.MethodCallHandler,
             resultMap["speed"] = location?.speed
             resultMap["street"] = location?.street
             resultMap["streetNumber"] = location?.streetNumber
+            resultMap["town"] = location?.town
             /**
             resultMap["userIndoorState"] = location?.userIndoorState
             resultMap["vdrJsonString"] = location?.vdrJsonString
