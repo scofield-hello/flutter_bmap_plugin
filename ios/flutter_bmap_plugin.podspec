@@ -15,7 +15,6 @@ A new flutter plugin project.
   s.source_files = 'Classes/**/*'
   s.public_header_files = 'Classes/**/*.h'
   s.dependency 'Flutter'
-  s.dependency 'MJExtension'
   s.dependency 'BaiduMapKit'
   s.dependency 'BMKLocationKit'
   s.resources = 'Resources/mapapi.bundle','Resources/Icon_end.png','Resources/Icon_road_blue_arrow.png','Resources/Icon_road_green_arrow.png','Resources/Icon_road_red_arrow.png','Resources/Icon_road_yellow_arrow.png','Resources/Icon_start.png','Resources/marker.png','Resources/nav_arrow.png'
