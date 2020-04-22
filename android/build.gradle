@@ -31,7 +31,9 @@ android {
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
-        main.jniLibs.srcDir 'libs'
+        main {
+            jniLibs.srcDir 'libs'
+        }
     }
     defaultConfig {
         minSdkVersion 16
@@ -42,7 +44,7 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation files('libs/BaiduLBS_Android.jar')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation "androidx.core:core-ktx:$core_ktx_version"
 }
