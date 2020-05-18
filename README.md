@@ -38,10 +38,8 @@ android {
 ```
 <key>BaiduMap</key>
 	<dict>
-		<key>location_key</key>
+		<key>sdk_key</key>
 		<string>your location_sdk_key</string>
-		<key>mapsdk_key</key>
-		<string>your map_sdk_key</string>
 	</dict>
 
 <key>UIBackgroundModes</key>
