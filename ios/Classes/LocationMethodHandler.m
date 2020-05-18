@@ -88,7 +88,7 @@
     _locationManager.activityType = CLActivityTypeAutomotiveNavigation;
     _locationManager.pausesLocationUpdatesAutomatically = NO;
     _locationManager.allowsBackgroundLocationUpdates = YES;
-    NSInteger locationTimeout = [[arguments objectForKey:@"timeOut"] integerValue];
+    NSInteger locationTimeout = [[arguments objectForKey:@"timeOut"] integerValue] / 1000;
     _locationManager.locationTimeout = locationTimeout;
     BOOL isNeedAddress = [[arguments objectForKey:@"isNeedAddress"] boolValue];
     _locationManager.locatingWithReGeocode = isNeedAddress;
@@ -132,7 +132,7 @@
         NSLog(@"不合法的参数locationMode: %@. 将使用默认值: Battery_Saving",locationMode);
         _locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters;
     }
-    NSInteger locationTimeout = [[arguments objectForKey:@"timeOut"] integerValue];
+    NSInteger locationTimeout = [[arguments objectForKey:@"timeOut"] integerValue] / 1000;
     _locationManager.locationTimeout = locationTimeout;
     BOOL isNeedAddress = [[arguments objectForKey:@"isNeedAddress"] boolValue];
     _locationManager.locatingWithReGeocode = isNeedAddress;
@@ -314,9 +314,9 @@
 
 - (BOOL)checkLocationServiceEnabled:(BOOL)showRequest{
     if ([CLLocationManager locationServicesEnabled]) {
-        if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied
-            || [CLLocationManager authorizationStatus] == kCLAuthorizationStatusNotDetermined
-            || [CLLocationManager authorizationStatus] == kCLAuthorizationStatusRestricted) {
+        CLAuthorizationStatus extractedExpr = [CLLocationManager authorizationStatus];
+        if (extractedExpr == kCLAuthorizationStatusDenied
+            || extractedExpr == kCLAuthorizationStatusRestricted) {
             if (showRequest) {
                 NSLog(@"打开应用设置");
                 NSString * message = @"请允许APP定位,以便于获得您的位置信息";
@@ -332,17 +332,15 @@
             return YES;
         }
     } else {
-        if(showRequest){
-            if (showRequest) {
-                NSLog(@"打开系统定位设置");
-                NSString * message = @"请在设置中打开定位服务,以便于获得您的位置信息";
-                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"提示"
-                                                               message:message
-                                                              delegate:self
-                                                     cancelButtonTitle:@"取消"
-                                                     otherButtonTitles:@"设置",nil];
-                [alert show];
-            }
+        if (showRequest) {
+            NSLog(@"打开系统定位设置");
+            NSString * message = @"请在设置中打开定位服务,以便于获得您的位置信息";
+            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"提示"
+                                                           message:message
+                                                          delegate:self
+                                                 cancelButtonTitle:@"取消"
+                                                 otherButtonTitles:@"设置",nil];
+            [alert show];
         }
         return NO;
     }

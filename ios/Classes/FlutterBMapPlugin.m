@@ -30,27 +30,21 @@ static FlutterBMapPlugin *instance;
     //初始化百度定位SDK,从Info.plist中读取BaiduMap配置
     NSDictionary *infoPlistDict = [[NSBundle mainBundle] infoDictionary];
     NSDictionary *baiduMapConfiguration = [infoPlistDict objectForKey:@"BaiduMap"];
-    NSString *locationKey = [baiduMapConfiguration objectForKey:@"location_key"];
-    NSString *mapsdkKey = [baiduMapConfiguration objectForKey:@"mapsdk_key"];
-    NSLog(@"获取到百度定位SDK Key:%@", locationKey);
-    NSLog(@"获取到百度地图SDK Key:%@", mapsdkKey);
-    if(locationKey && locationKey.length == 32){
+    NSString *sdkKey = [baiduMapConfiguration objectForKey:@"sdk_key"];
+    NSLog(@"获取到百度定位SDK Key:%@", sdkKey);
+    if(sdkKey && sdkKey.length == 32){
         NSLog(@"初始化百度定位SDK,鉴权中...");
-        [[BMKLocationAuth sharedInstance] checkPermisionWithKey:locationKey
+        [[BMKLocationAuth sharedInstance] checkPermisionWithKey:sdkKey
                                                    authDelegate:instance];
-    }else{
-        NSLog(@"百度定位SDK Key不正确,请在Info.plist中配置正确的值");
-    }
-    if (mapsdkKey && mapsdkKey.length == 32) {
         NSLog(@"初始化百度地图SDK,鉴权中...");
         BMKMapManager *mapManager = [[BMKMapManager alloc] init];
         // 如果要关注网络及授权验证事件，请设定generalDelegate参数
-        BOOL ret = [mapManager start:mapsdkKey generalDelegate:instance];
+        BOOL ret = [mapManager start:sdkKey generalDelegate:instance];
         if (!ret) {
             NSLog(@"启动百度地图引擎失败");
         }
     }else{
-        NSLog(@"百度地图SDK Key不正确,请在Info.plist中配置正确的值");
+        NSLog(@"百度定位SDK Key不正确,请在Info.plist中配置正确的值");
     }
     FlutterMethodChannel *locationChannel = [FlutterMethodChannel
                                              methodChannelWithName:CDLocationMethodChannel
