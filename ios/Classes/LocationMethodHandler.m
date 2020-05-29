@@ -339,6 +339,7 @@
                                                       delegate:self
                                              cancelButtonTitle:@"取消"
                                              otherButtonTitles:@"打开",nil];
+        [alert show];
         return NO;
     }
     return YES;
