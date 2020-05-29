@@ -36,14 +36,14 @@
     if ([call.method isEqualToString:@"isStart"]) {
         result([NSNumber numberWithBool:_start]);
     }else if([call.method isEqualToString:@"startLocation"]){
-        if ([self checkLocationServiceEnabled:YES]) {
+        if ([self checkLocationServiceEnabled]) {
             [self startLocation:call.arguments];
         }else{
             NSLog(@"用户未打开定位.");
         }
         result(nil);
     }else if([call.method isEqualToString:@"requestLocation"]){
-        if ([self checkLocationServiceEnabled:YES]) {
+        if ([self checkLocationServiceEnabled]) {
             [self requestLocation:call.arguments];
         }else{
             NSLog(@"用户未打开定位.");
@@ -87,7 +87,7 @@
     }
     _locationManager.activityType = CLActivityTypeAutomotiveNavigation;
     _locationManager.pausesLocationUpdatesAutomatically = NO;
-    _locationManager.allowsBackgroundLocationUpdates = YES;
+    _locationManager.allowsBackgroundLocationUpdates = NO;
     NSInteger locationTimeout = [[arguments objectForKey:@"timeOut"] integerValue] / 1000;
     _locationManager.locationTimeout = locationTimeout;
     BOOL isNeedAddress = [[arguments objectForKey:@"isNeedAddress"] boolValue];
@@ -306,44 +306,42 @@
         if([CLLocationManager locationServicesEnabled]){
             [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
         }else{
-            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+            if (@available(iOS 10.0, *)) {
+                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"App-Prefs:root=LOCATION"]];
+            }else{
+                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"prefs:root=LOCATION"]];
+            }
         }
-       
     }
 }
 
-- (BOOL)checkLocationServiceEnabled:(BOOL)showRequest{
-    if ([CLLocationManager locationServicesEnabled]) {
-        CLAuthorizationStatus extractedExpr = [CLLocationManager authorizationStatus];
-        if (extractedExpr == kCLAuthorizationStatusDenied
-            || extractedExpr == kCLAuthorizationStatusRestricted) {
-            if (showRequest) {
-                NSLog(@"打开应用设置");
-                NSString * message = @"请允许APP定位,以便于获得您的位置信息";
-                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"提示"
-                                                               message:message
-                                                              delegate:self
-                                                     cancelButtonTitle:@"取消"
-                                                     otherButtonTitles:@"设置",nil];
-                [alert show];
-            }
-            return NO;
-        }else{
-            return YES;
-        }
-    } else {
-        if (showRequest) {
-            NSLog(@"打开系统定位设置");
-            NSString * message = @"请在设置中打开定位服务,以便于获得您的位置信息";
-            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"提示"
-                                                           message:message
-                                                          delegate:self
-                                                 cancelButtonTitle:@"取消"
-                                                 otherButtonTitles:@"设置",nil];
-            [alert show];
-        }
+- (BOOL)checkLocationServiceEnabled{
+    BOOL enabled = [CLLocationManager locationServicesEnabled];
+    CLAuthorizationStatus status = [CLLocationManager authorizationStatus];
+    if (!enabled){
+        NSLog(@"打开系统定位设置");
+        NSString * message = @"是否打开设置[隐私]中的定位服务,以便获得您的位置信息?";
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"提示"
+                                                       message:message
+                                                      delegate:self
+                                             cancelButtonTitle:@"取消"
+                                             otherButtonTitles:@"打开",nil];
+        [alert show];
         return NO;
     }
+    if (status != kCLAuthorizationStatusAuthorizedWhenInUse
+        && status != kCLAuthorizationStatusAuthorizedAlways
+        && status != kCLAuthorizationStatusAuthorized) {
+        NSLog(@"打开应用设置");
+        NSString * message = @"是否打开应用设置中的[位置]权限,以便获得您的位置信息?";
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"提示"
+                                                       message:message
+                                                      delegate:self
+                                             cancelButtonTitle:@"取消"
+                                             otherButtonTitles:@"打开",nil];
+        return NO;
+    }
+    return YES;
 }
 
 
