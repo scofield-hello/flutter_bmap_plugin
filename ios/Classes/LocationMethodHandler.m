@@ -38,17 +38,41 @@
     }else if([call.method isEqualToString:@"startLocation"]){
         if ([self checkLocationServiceEnabled]) {
             [self startLocation:call.arguments];
+            if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusNotDetermined) {
+                result([FlutterError errorWithCode:@"PERMISSION_DENIED" message:@"请在设置中打开应用的[位置]权限后重试" details:nil]);
+                NSString * message = @"是否打开应用设置中的[位置]权限,以便获得您的位置信息?";
+                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"提示"
+                                                               message:message
+                                                              delegate:self
+                                                     cancelButtonTitle:@"取消"
+                                                     otherButtonTitles:@"打开",nil];
+                [alert show];
+            }else{
+                result(nil);
+            }
         }else{
             NSLog(@"用户未打开定位.");
+            result([FlutterError errorWithCode:@"PERMISSION_DENIED" message:@"请在设置中打开应用的[位置]权限后重试" details:nil]);
         }
-        result(nil);
     }else if([call.method isEqualToString:@"requestLocation"]){
         if ([self checkLocationServiceEnabled]) {
             [self requestLocation:call.arguments];
+            if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusNotDetermined) {
+                result([FlutterError errorWithCode:@"PERMISSION_DENIED" message:@"请在设置中打开应用的[位置]权限后重试" details:nil]);
+                NSString * message = @"是否打开应用设置中的[位置]权限,以便获得您的位置信息?";
+                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"提示"
+                                                               message:message
+                                                              delegate:self
+                                                     cancelButtonTitle:@"取消"
+                                                     otherButtonTitles:@"打开",nil];
+                [alert show];
+            }else{
+                result(nil);
+            }
         }else{
             NSLog(@"用户未打开定位.");
+            result([FlutterError errorWithCode:@"PERMISSION_DENIED" message:@"请在设置中打开应用的[位置]权限后重试" details:nil]);
         }
-        result(nil);
     }else if([call.method isEqualToString:@"stopLocation"]){
         [self stopLocation];
         result(nil);
@@ -59,6 +83,7 @@
 
 #pragma mark - 定位SDK相关方法实现
 - (void) startLocation:(NSDictionary *)arguments{
+    [_locationManager stopUpdatingLocation];
     NSString *coordName = [arguments valueForKey:@"coorType"];
     if ([coordName isEqualToString: @"bd09ll"]) {
         _locationManager.coordinateType = BMKLocationCoordinateTypeBMK09LL;
@@ -105,6 +130,7 @@
 }
 
 - (void) requestLocation:(NSDictionary *)arguments{
+    [_locationManager stopUpdatingLocation];
     NSString *coordName = [arguments valueForKey:@"coorType"];
     if ([coordName isEqualToString: @"bd09ll"]) {
         _locationManager.coordinateType = BMKLocationCoordinateTypeBMK09LL;
@@ -305,12 +331,6 @@
     if (buttonIndex == 1){
         if([CLLocationManager locationServicesEnabled]){
             [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
-        }else{
-            if (@available(iOS 10.0, *)) {
-                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"App-Prefs:root=LOCATION"]];
-            }else{
-                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"prefs:root=LOCATION"]];
-            }
         }
     }
 }
@@ -320,18 +340,18 @@
     CLAuthorizationStatus status = [CLLocationManager authorizationStatus];
     if (!enabled){
         NSLog(@"打开系统定位设置");
-        NSString * message = @"是否打开设置[隐私]中的定位服务,以便获得您的位置信息?";
+        NSString * message = @"您需要前往系统设置并打开[隐私]中的定位服务,以便获得您的位置信息";
         UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"提示"
                                                        message:message
                                                       delegate:self
-                                             cancelButtonTitle:@"取消"
-                                             otherButtonTitles:@"打开",nil];
+                                             cancelButtonTitle:nil
+                                             otherButtonTitles:@"确定",nil];
         [alert show];
         return NO;
     }
-    if (status != kCLAuthorizationStatusAuthorizedWhenInUse
-        && status != kCLAuthorizationStatusAuthorizedAlways
-        && status != kCLAuthorizationStatusAuthorized) {
+    if (status == kCLAuthorizationStatusRestricted
+        || status == kCLAuthorizationStatusDenied) {
+        //|| status == kCLAuthorizationStatusNotDetermined) {
         NSLog(@"打开应用设置");
         NSString * message = @"是否打开应用设置中的[位置]权限,以便获得您的位置信息?";
         UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"提示"
