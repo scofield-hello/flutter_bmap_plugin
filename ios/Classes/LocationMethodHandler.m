@@ -237,28 +237,29 @@
        toDictionary:(NSMutableDictionary * _Nonnull)dictionary{
     NSString *time = [_dateFormatter stringFromDate:location.location.timestamp];
     [dictionary setValue:time forKey:@"time"];
-    NSString *country = location.rgcData ? location.rgcData.country : nil;
+    NSString *country = location.rgcData ? location.rgcData.country : @"";
     [dictionary setValue:country forKey:@"country"];
-    NSString *countryCode = location.rgcData ? location.rgcData.countryCode : nil;
+    NSString *countryCode = location.rgcData ? location.rgcData.countryCode : @"";
     [dictionary setValue:countryCode forKey:@"countryCode"];
-    NSString *province = location.rgcData ? location.rgcData.province : nil;
+    NSString *province = location.rgcData ? location.rgcData.province : @"";
     [dictionary setValue:province forKey:@"province"];
-    NSString *city = location.rgcData ? location.rgcData.city : nil;
+    NSString *city = location.rgcData ? location.rgcData.city : @"";
     [dictionary setValue:city forKey:@"city"];
-    NSString *cityCode = location.rgcData ? location.rgcData.cityCode : nil;
+    NSString *cityCode = location.rgcData ? location.rgcData.cityCode : @"";
     [dictionary setValue:cityCode forKey:@"cityCode"];
-    NSString *adCode = location.rgcData ? location.rgcData.adCode : nil;
+    NSString *adCode = location.rgcData ? location.rgcData.adCode : @"";
     [dictionary setValue:adCode forKey:@"adCode"];
-    NSString *addrStr = location.rgcData ? location.rgcData.locationDescribe : nil;
-    [dictionary setValue:addrStr forKey:@"addrStr"];
     NSString *district = location.rgcData ? location.rgcData.district : @"";
     [dictionary setValue:district forKey:@"district"];
     NSString *streeet = location.rgcData ? location.rgcData.street : @"";
     [dictionary setValue:streeet forKey:@"street"];
     NSString *streetNumber = location.rgcData ? location.rgcData.streetNumber : @"";
     [dictionary setValue:streetNumber forKey:@"streetNumber"];
-    NSString *town = location.rgcData ? location.rgcData.town : nil;
+    NSString *town = location.rgcData ? location.rgcData.town : @"";
     [dictionary setValue:town forKey:@"town"];
+    NSString *addrStr = [NSString stringWithFormat:@"%1$@%2$@%3$@%4$@%5$@%6$@",
+                         province, city,district,town, streeet, streetNumber];
+    [dictionary setValue:addrStr forKey:@"addrStr"];
     [dictionary setValue:location.floorString forKey:@"floor"];
     [dictionary setValue:location.buildingID forKey:@"buildingID"];
     [dictionary setValue:location.buildingName forKey:@"buildingName"];
