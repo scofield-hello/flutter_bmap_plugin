@@ -259,6 +259,8 @@
     [dictionary setValue:town forKey:@"town"];
     NSString *addrStr = [NSString stringWithFormat:@"%1$@%2$@%3$@%4$@%5$@%6$@",
                          province, city,district,town, streeet, streetNumber];
+    addrStr = [addrStr stringByReplacingOccurrencesOfString:@"(null)" withString:@""];
+    addrStr = [addrStr stringByReplacingOccurrencesOfString:@"null" withString:@""];
     [dictionary setValue:addrStr forKey:@"addrStr"];
     [dictionary setValue:location.floorString forKey:@"floor"];
     [dictionary setValue:location.buildingID forKey:@"buildingID"];
